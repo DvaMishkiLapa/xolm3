@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1024</width>
+    <height>768</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1024</width>
+    <height>768</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Xolm3</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="params">
+       <attribute name="title">
+        <string>Параметры</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="1" column="0">
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>115</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Параметры погружателя</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Кол-во пар дебалансов</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="plunger_pairs_edit">
+               <property name="text">
+                <string>6</string>
+               </property>
+               <property name="maxLength">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_10">
+             <item>
+              <widget class="QLabel" name="label_10">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Вес, кг.</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="plunger_weight_edit">
+               <property name="text">
+                <string>170</string>
+               </property>
+               <property name="maxLength">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>155</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Параметры грунта</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_9">
+             <item>
+              <widget class="QLabel" name="label_9">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Коэф. условий работы грунта под нижним концом сваи</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="coef_lower_pile_edit">
+               <property name="text">
+                <string>1.1</string>
+               </property>
+               <property name="maxLength">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_14">
+             <item>
+              <widget class="QLabel" name="label_14">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Коэф. условий работы грунта на боковой поверхности</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="coef_soil_pile_edit">
+               <property name="text">
+                <string>1</string>
+               </property>
+               <property name="maxLength">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_13">
+             <item>
+              <widget class="QLabel" name="label_13">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Расчётное сопротивлене по боковой поверхности, кПа</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="resistance_surface_edit">
+               <property name="text">
+                <string>35000</string>
+               </property>
+               <property name="maxLength">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="groupBox">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>240</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Параметры сваи</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Шаг по времени</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="time_step_edit">
+               <property name="inputMethodHints">
+                <set>Qt::ImhNone</set>
+               </property>
+               <property name="text">
+                <string>0.0001</string>
+               </property>
+               <property name="maxLength">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <widget class="QLabel" name="label_6">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Длинна сваи, м.</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="pile_length_edit">
+               <property name="text">
+                <string>0.6</string>
+               </property>
+               <property name="maxLength">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QLabel" name="label_4">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Ширина сваи, м.</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="pile_width_edit">
+               <property name="text">
+                <string>0.04</string>
+               </property>
+               <property name="maxLength">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <item>
+              <widget class="QLabel" name="label_5">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Глубина сваи, м.</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="pile_depth_edit">
+               <property name="text">
+                <string>0.04</string>
+               </property>
+               <property name="maxLength">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_7">
+             <item>
+              <widget class="QLabel" name="label_7">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Материал сваи</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="pile_type">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Бетон</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Сталь</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Пластик</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QGroupBox" name="groupBox_4">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>155</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Рассчитанные параметры</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Вес погружателя, кг.</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEdit_2">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <item>
+              <widget class="QLabel" name="label_11">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Периметр сваи, м.</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEdit_8">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
+             <item>
+              <widget class="QLabel" name="label_8">
+               <property name="minimumSize">
+                <size>
+                 <width>415</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Площадь сваи, кв. м.</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEdit_7">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="graps">
+       <attribute name="title">
+        <string>Графики</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
