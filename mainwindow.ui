@@ -16,6 +16,12 @@
     <height>768</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <family>Arial</family>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Xolm3</string>
   </property>
@@ -64,7 +70,7 @@
               <widget class="QLabel" name="label">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -91,7 +97,7 @@
               <widget class="QLabel" name="label_10">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -133,7 +139,7 @@
               <widget class="QLabel" name="label_9">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -160,7 +166,7 @@
               <widget class="QLabel" name="label_14">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -187,7 +193,7 @@
               <widget class="QLabel" name="label_13">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -229,7 +235,7 @@
               <widget class="QLabel" name="label_3">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -259,7 +265,7 @@
               <widget class="QLabel" name="label_6">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -286,7 +292,7 @@
               <widget class="QLabel" name="label_4">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -313,7 +319,7 @@
               <widget class="QLabel" name="label_5">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -340,7 +346,7 @@
               <widget class="QLabel" name="label_7">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -397,7 +403,7 @@
               <widget class="QLabel" name="label_2">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -421,7 +427,7 @@
               <widget class="QLabel" name="label_11">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -445,7 +451,7 @@
               <widget class="QLabel" name="label_8">
                <property name="minimumSize">
                 <size>
-                 <width>415</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
@@ -671,7 +677,7 @@
                 <widget class="QLabel" name="label_18">
                  <property name="minimumSize">
                   <size>
-                   <width>200</width>
+                   <width>215</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -695,12 +701,13 @@
                 <widget class="QLabel" name="label_15">
                  <property name="minimumSize">
                   <size>
-                   <width>200</width>
+                   <width>215</width>
                    <height>0</height>
                   </size>
                  </property>
                  <property name="text">
-                  <string>Число оборотов на I валу, об/мин</string>
+                  <string>Число оборотов на I валу,
+об/мин</string>
                  </property>
                 </widget>
                </item>
@@ -719,7 +726,7 @@
                 <widget class="QLabel" name="label_17">
                  <property name="minimumSize">
                   <size>
-                   <width>200</width>
+                   <width>215</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -743,7 +750,7 @@
                 <widget class="QLabel" name="label_16">
                  <property name="minimumSize">
                   <size>
-                   <width>200</width>
+                   <width>215</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -852,6 +859,30 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>time_step_edit</tabstop>
+  <tabstop>pile_length_edit</tabstop>
+  <tabstop>pile_width_edit</tabstop>
+  <tabstop>pile_depth_edit</tabstop>
+  <tabstop>pile_type</tabstop>
+  <tabstop>plunger_pairs_edit</tabstop>
+  <tabstop>plunger_weight_edit</tabstop>
+  <tabstop>coef_lower_pile_edit</tabstop>
+  <tabstop>coef_soil_pile_edit</tabstop>
+  <tabstop>resistance_surface_edit</tabstop>
+  <tabstop>lineEdit_2</tabstop>
+  <tabstop>lineEdit_8</tabstop>
+  <tabstop>lineEdit_7</tabstop>
+  <tabstop>depth_edit</tabstop>
+  <tabstop>turnover_edit</tabstop>
+  <tabstop>time_edit</tabstop>
+  <tabstop>frequency_edit</tabstop>
+  <tabstop>start_button</tabstop>
+  <tabstop>pause_button</tabstop>
+  <tabstop>stop_button</tabstop>
+  <tabstop>speed_spen</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
