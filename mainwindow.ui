@@ -45,7 +45,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="params">
        <attribute name="title">
@@ -70,7 +70,7 @@
               <widget class="QLabel" name="label">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
@@ -97,7 +97,7 @@
               <widget class="QLabel" name="label_10">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
@@ -139,7 +139,7 @@
               <widget class="QLabel" name="label_9">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
@@ -166,7 +166,7 @@
               <widget class="QLabel" name="label_14">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
@@ -193,7 +193,7 @@
               <widget class="QLabel" name="label_13">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
@@ -235,7 +235,7 @@
               <widget class="QLabel" name="label_3">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
@@ -265,7 +265,7 @@
               <widget class="QLabel" name="label_6">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
@@ -292,7 +292,7 @@
               <widget class="QLabel" name="label_4">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
@@ -319,7 +319,7 @@
               <widget class="QLabel" name="label_5">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
@@ -346,7 +346,7 @@
               <widget class="QLabel" name="label_7">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
@@ -403,17 +403,17 @@
               <widget class="QLabel" name="label_2">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
                <property name="text">
-                <string>Вес погружателя, кг.</string>
+                <string>Вес сваи, кг.</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="lineEdit_2">
+              <widget class="QLineEdit" name="pile_weight_edit">
                <property name="readOnly">
                 <bool>true</bool>
                </property>
@@ -427,7 +427,7 @@
               <widget class="QLabel" name="label_11">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
@@ -437,7 +437,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="lineEdit_8">
+              <widget class="QLineEdit" name="pile_perimeter_edit">
                <property name="readOnly">
                 <bool>true</bool>
                </property>
@@ -451,7 +451,7 @@
               <widget class="QLabel" name="label_8">
                <property name="minimumSize">
                 <size>
-                 <width>430</width>
+                 <width>440</width>
                  <height>0</height>
                 </size>
                </property>
@@ -461,7 +461,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="lineEdit_7">
+              <widget class="QLineEdit" name="pile_area_edit">
                <property name="readOnly">
                 <bool>true</bool>
                </property>
@@ -493,9 +493,9 @@
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_15">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_6">
+         <layout class="QVBoxLayout" name="draw_layout">
           <item>
-           <widget class="QGroupBox" name="depth_grap_box">
+           <widget class="QGroupBox" name="draw_box">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -509,124 +509,24 @@
              </size>
             </property>
             <property name="title">
-             <string>Глубина погружения, мм.</string>
+             <string>Графики</string>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_22">
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>631</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="turnover_grap_box">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>650</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="title">
-             <string>Число оборотов на I валу, об/мин</string>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_23">
-             <item>
-              <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>631</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="time_grap_box">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>650</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="title">
-             <string>Время погружения, сек.</string>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_24">
-             <item>
-              <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>631</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="frequency_grap_box">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>650</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="title">
-             <string>Частота, Гц.</string>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_25">
-             <item>
-              <spacer name="horizontalSpacer_4">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>631</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
+            <layout class="QVBoxLayout" name="draw_box_layout">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
             </layout>
            </widget>
           </item>
@@ -670,7 +570,31 @@
             <property name="title">
              <string>Текущие параметры</string>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_9">
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_22">
+               <item>
+                <widget class="QLabel" name="label_19">
+                 <property name="minimumSize">
+                  <size>
+                   <width>215</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Время погружения, сек.</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="depth_edit_2">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_21">
                <item>
@@ -682,7 +606,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>Глубина погружения, мм.</string>
+                  <string>глубина погружения, мм</string>
                  </property>
                 </widget>
                </item>
@@ -706,8 +630,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>Число оборотов на I валу,
-об/мин</string>
+                  <string>Скорость, об/сек</string>
                  </property>
                 </widget>
                </item>
@@ -731,7 +654,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>Время погружения, сек.</string>
+                  <string>Импульс</string>
                  </property>
                 </widget>
                </item>
@@ -755,7 +678,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>Частота, Гц.</string>
+                  <string>Импульс с шумом</string>
                  </property>
                 </widget>
                </item>
@@ -825,23 +748,20 @@
                <item>
                 <widget class="QLabel" name="label_12">
                  <property name="text">
-                  <string>Коэффициент ускорения, %</string>
+                  <string>Скорость процесса</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="speed_spen">
-                 <property name="minimum">
-                  <number>10</number>
-                 </property>
+                <widget class="QSlider" name="speed_slider">
                  <property name="maximum">
-                  <number>500</number>
-                 </property>
-                 <property name="singleStep">
-                  <number>10</number>
+                  <number>200</number>
                  </property>
                  <property name="value">
-                  <number>100</number>
+                  <number>2</number>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
                </item>
@@ -871,9 +791,9 @@
   <tabstop>coef_lower_pile_edit</tabstop>
   <tabstop>coef_soil_pile_edit</tabstop>
   <tabstop>resistance_surface_edit</tabstop>
-  <tabstop>lineEdit_2</tabstop>
-  <tabstop>lineEdit_8</tabstop>
-  <tabstop>lineEdit_7</tabstop>
+  <tabstop>pile_weight_edit</tabstop>
+  <tabstop>pile_perimeter_edit</tabstop>
+  <tabstop>pile_area_edit</tabstop>
   <tabstop>depth_edit</tabstop>
   <tabstop>turnover_edit</tabstop>
   <tabstop>time_edit</tabstop>
@@ -881,7 +801,6 @@
   <tabstop>start_button</tabstop>
   <tabstop>pause_button</tabstop>
   <tabstop>stop_button</tabstop>
-  <tabstop>speed_spen</tabstop>
  </tabstops>
  <resources/>
  <connections/>
