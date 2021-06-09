@@ -121,10 +121,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.impulse_noise_edit.setText(str(round(cut_impulse_noise[-1], 2)))
             self.sc.fig.canvas.draw()
         else:
-            print(self.dynamic_line_step)
-            print('elif self.dynamic_line_step:')
             self.timer.stop()
-        print(self.dynamic_line_step)
 
     def scan_param(self):
         self.g = 9.81
