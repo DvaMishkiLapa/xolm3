@@ -17,15 +17,9 @@ matplotlib.use('Qt5Agg')
 
 class MplCanvas(FigureCanvasQTAgg):
 
-    def __init__(self, parent=None, dpi=100):
-        # fig = Figure(dpi=dpi)
+    def __init__(self, parent=None):
         self.fig, self.axarr = plt.subplots(4, sharex=True)
-
-        self.axarr[0].set_title(r'$x(t)$ - глубина погружения, мм')
-        self.axarr[1].set_title(r'$\omega$ - количество оборотов в секунду')
-        self.axarr[2].set_title(r'$\Sigma$ - импульс')
-        self.axarr[3].set_title(r'$\Sigma$ - импульс с шумом')
-
+        self.labels_enable()
         self.fig.subplots_adjust(
             left=.1,
             bottom=.05,
@@ -39,6 +33,12 @@ class MplCanvas(FigureCanvasQTAgg):
     def grid_enable(self):
         for x in self.axarr:
             x.grid(True)
+
+    def labels_enable(self):
+        self.axarr[0].set_title(r'$x(t)$ - глубина погружения, м')
+        self.axarr[1].set_title(r'$\omega$ - количество оборотов в секунду')
+        self.axarr[2].set_title(r'$\Sigma$ - импульс')
+        self.axarr[3].set_title(r'$\Sigma$ - импульс с шумом')
 
 
 # Class main form

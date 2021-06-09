@@ -178,8 +178,6 @@ if __name__ == '__main__':
 
     x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi)
 
-    x = list(map(lambda i: i * 1000, x))
-
     f, axarr = plt.subplots(4, sharex=True)
     f.subplots_adjust(hspace=0.4)
 
