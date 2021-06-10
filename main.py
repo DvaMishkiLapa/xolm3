@@ -25,10 +25,14 @@ class MplCanvas(FigureCanvasQTAgg):
             bottom=.05,
             right=.96,
             top=.96,
-            hspace=0.3,
+            hspace=0.4,
         )
         self.grid_enable()
         super(MplCanvas, self).__init__(self.fig)
+
+        for i in range(4):
+            self.axarr[i].spines['top'].set_visible(False)
+            self.axarr[i].spines['right'].set_visible(False)
 
     def grid_enable(self):
         for x in self.axarr:
