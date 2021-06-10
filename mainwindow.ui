@@ -45,7 +45,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="params">
        <attribute name="title">
@@ -649,12 +649,12 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="progress_status">
+           <widget class="QPushButton" name="progress_status">
             <property name="text">
              <string>Погружение не начато</string>
             </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+            <property name="flat">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -790,7 +790,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>Глубина погружения, мм</string>
+                  <string>Глубина погружения, м</string>
                  </property>
                 </widget>
                </item>

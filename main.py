@@ -92,7 +92,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
         self.timer = QtCore.QTimer()
         self.timer_ms = 75
-        self.timer.timeout.connect(self.draw_line)
+        self.timer.timeout.connect(self.draw_tick)
 
         self.param_change(True)
 
@@ -103,7 +103,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
     def speed_boost(self, s):
         self.dynamic_line_step = self.default_line_step * s
 
-    def draw_line(self):
+    def draw_tick(self):
         self.current_step += self.dynamic_line_step
         cut_t = self.t[:self.current_step]
         cut_x = self.x[:self.current_step]
@@ -132,10 +132,14 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.speed_edit.setText(str(round(cut_w[-1], 2)))
             self.impulse_edit.setText(str(round(cut_impulse[-1], 2)))
             self.impulse_noise_edit.setText(str(round(cut_impulse_noise[-1], 2)))
+            if cut_x[-1]:
+                self.progress_bar.setValue(int(cut_x[-1] / self.l * 100))
             self.sc.fig.canvas.draw()
             self.sc.fig.canvas.flush_events()
         else:
             self.stop_draw()
+            if self.progress_bar.value != 100:
+                self.progress_status.setText('Свая погружена не полностью')
 
     def scan_param(self):
         self.g = 9.81
@@ -186,13 +190,16 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.timer.stop()
             self.started_status = 'PAUSE'
             self.start_button.setText('Старт')
+            self.progress_status.setText('Погружение приостановлено')
         elif self.started_status == 'STOP':
             self.started_status = 'START'
             self.start_button.setText('Пауза')
+            self.progress_status.setText('Расчет данных...')
             self.axarr_0.set_data(0, 0)
             self.axarr_1.set_data(0, 0)
             self.axarr_2.set_data(0, 0)
             self.axarr_3.set_data(0, 0)
+            self.progress_bar.setValue(0)
             self.scan_param()
             self.x, self.t, self.w, self.impulse, self.impulse_noise = pogruzhatel_jit.main(
                 self.g,
@@ -211,17 +218,20 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
                 self.default_line_step = 1
             else:
                 self.default_line_step = len(self.x) // 3500
+            self.progress_status.setText('Погружение...')
             self.dynamic_line_step = self.default_line_step * self.speed_slider.value()
             self.timer.start(self.timer_ms)
         elif self.started_status == 'PAUSE':
             self.timer.start(self.timer_ms)
             self.started_status = 'START'
             self.start_button.setText('Пауза')
+            self.progress_status.setText('Погружение...')
 
     def stop_draw(self):
         self.timer.stop()
         self.started_status = 'STOP'
         self.start_button.setText('Старт')
+        self.progress_status.setText('Погружение не начато')
         self.current_step = 0
 
 
