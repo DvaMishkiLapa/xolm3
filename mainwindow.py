@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1024, 768)
+        MainWindow.resize(1025, 768)
         MainWindow.setMinimumSize(QtCore.QSize(1024, 768))
         font = QtGui.QFont()
         font.setFamily("Arial")
@@ -266,6 +266,7 @@ class Ui_MainWindow(object):
         self.draw_layout.addWidget(self.draw_box)
         self.horizontalLayout_15.addLayout(self.draw_layout)
         self.verticalLayout_7 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_7.setContentsMargins(6, 6, 6, 0)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_7.addItem(spacerItem1)
@@ -370,8 +371,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_17.addWidget(self.label_12)
         self.speed_slider = QtWidgets.QSlider(self.groupBox_10)
         self.speed_slider.setMinimum(1)
-        self.speed_slider.setMaximum(200)
-        self.speed_slider.setProperty("value", 100)
+        self.speed_slider.setMaximum(300)
+        self.speed_slider.setProperty("value", 1)
         self.speed_slider.setOrientation(QtCore.Qt.Horizontal)
         self.speed_slider.setTickPosition(QtWidgets.QSlider.NoTicks)
         self.speed_slider.setTickInterval(0)
@@ -385,7 +386,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.tabWidget, self.time_step_edit)
         MainWindow.setTabOrder(self.time_step_edit, self.pile_length_edit)

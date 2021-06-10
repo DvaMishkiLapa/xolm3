@@ -90,7 +90,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.started_status = 'STOP'
 
         self.timer = QtCore.QTimer()
-        self.timer_ms = 50
+        self.timer_ms = 75
         self.timer.timeout.connect(self.draw_line)
 
         self.param_change(True)
@@ -126,7 +126,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.sc.fig.canvas.draw()
             self.sc.fig.canvas.flush_events()
         else:
-            self.timer.stop()
+            self.stop_draw()
 
     def scan_param(self):
         self.g = 9.81
