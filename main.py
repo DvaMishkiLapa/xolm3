@@ -79,51 +79,50 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.sc = MplCanvas(self)
         self.draw_box_layout.addWidget(self.sc)
         self.draw_box_layout.addWidget(NavigationToolbar2(self.sc, self))
+        self.axarr_0, = self.sc.axarr[0].plot(0, 0, linewidth=2, color='r')
+        self.axarr_1, = self.sc.axarr[1].plot(0, 0, linewidth=2, color='g')
+        self.axarr_2, = self.sc.axarr[2].plot(0, 0, linewidth=2, color='b')
+        self.axarr_3, = self.sc.axarr[3].plot(0, 0, linewidth=2, color='m')
 
         self.started_status = 'STOP'
 
         self.timer = QtCore.QTimer()
-        self.timer_ms = 100
+        self.timer_ms = 50
         self.timer.timeout.connect(self.draw_line)
-
-        self.last_x = 0
-        self.last_t = 0
-        self.last_w = 0
-        self.last_impulse = 0
-        self.last_impulse_noise = 0
-        self.last_cut_w = 0
 
         self.param_change(True)
 
         self.default_line_step = 0
         self.dynamic_line_step = 0
+        self.current_step = 0
 
     def speed_boost(self, s):
         self.dynamic_line_step = self.default_line_step * s
 
     def draw_line(self):
-        cut_t = self.t[self.last_t:self.last_t + self.dynamic_line_step + 1]
-        cut_x = self.x[self.last_x:self.last_x + self.dynamic_line_step + 1]
-        cut_w = self.w[self.last_w:self.last_w + self.dynamic_line_step + 1]
-        cut_impulse = self.impulse[self.last_impulse:self.last_impulse + self.dynamic_line_step + 1]
-        cut_impulse_noise = self.impulse_noise[self.last_impulse_noise:self.last_impulse_noise + self.dynamic_line_step + 1]
-        if cut_t:
-            self.sc.axarr[0].plot(cut_t, cut_x, linewidth=2, color='r')
-            self.sc.axarr[1].plot(cut_t, cut_w, linewidth=2, color='g')
-            self.sc.axarr[2].plot(cut_t, cut_impulse, linewidth=2, color='b')
-            self.sc.axarr[3].plot(cut_t, cut_impulse_noise, linewidth=2, color='m')
-            self.last_x += self.dynamic_line_step
-            self.last_t += self.dynamic_line_step
-            self.last_w += self.dynamic_line_step
-            self.last_impulse += self.dynamic_line_step
-            self.last_impulse_noise += self.dynamic_line_step
-            self.last_cut_w += self.dynamic_line_step
+        self.current_step += self.dynamic_line_step
+        cut_t = self.t[:self.current_step]
+        cut_x = self.x[:self.current_step]
+        cut_w = self.w[:self.current_step]
+        cut_impulse = self.impulse[:self.current_step]
+        cut_impulse_noise = self.impulse_noise[:self.current_step]
+        if len(self.t) >= self.current_step:
+            # self.sc.axarr[0].set_xlim(cut_t[0] - 3, cut_t[-1] + 1)
+            self.axarr_0.set_data(cut_t, cut_x)
+            self.axarr_1.set_data(cut_t, cut_w)
+            self.axarr_2.set_data(cut_t, cut_impulse)
+            self.axarr_3.set_data(cut_t, cut_impulse_noise)
+            for a in range(4):
+                self.sc.axarr[a].relim()
+                self.sc.axarr[a].autoscale_view()
+
             self.time_edit.setText(str(round(cut_t[-1], 2)))
             self.depth_edit.setText(str(round(cut_x[-1], 2)))
             self.speed_edit.setText(str(round(cut_w[-1], 2)))
             self.impulse_edit.setText(str(round(cut_impulse[-1], 2)))
             self.impulse_noise_edit.setText(str(round(cut_impulse_noise[-1], 2)))
             self.sc.fig.canvas.draw()
+            self.sc.fig.canvas.flush_events()
         else:
             self.timer.stop()
 
@@ -160,12 +159,10 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         elif self.started_status == 'STOP':
             self.started_status = 'START'
             self.start_button.setText('Пауза')
-            self.sc.axarr[0].clear()
-            self.sc.axarr[1].clear()
-            self.sc.axarr[2].clear()
-            self.sc.axarr[3].clear()
-            self.sc.labels_enable()
-            self.sc.grid_enable()
+            self.axarr_0.set_data(0, 0)
+            self.axarr_1.set_data(0, 0)
+            self.axarr_2.set_data(0, 0)
+            self.axarr_3.set_data(0, 0)
             self.scan_param()
             self.x, self.t, self.w, self.impulse, self.impulse_noise = pogruzhatel_jit.main(
                 self.g,
@@ -179,7 +176,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
                 self.gamma_cf,
                 self.fi
             )
-            self.default_line_step = len(self.x) // 3000
+            self.default_line_step = len(self.x) // 3500
             self.dynamic_line_step = self.default_line_step * self.speed_slider.value()
             self.timer.start(self.timer_ms)
         elif self.started_status == 'PAUSE':
@@ -191,12 +188,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.timer.stop()
         self.started_status = 'STOP'
         self.start_button.setText('Старт')
-        self.last_x = 0
-        self.last_t = 0
-        self.last_w = 0
-        self.last_impulse = 0
-        self.last_impulse_noise = 0
-        self.last_cut_w = 0
+        self.current_step = 0
 
 
 def main():
