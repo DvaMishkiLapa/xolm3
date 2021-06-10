@@ -56,7 +56,7 @@ def sum_(iterable):
 
 
 @jit(nopython=True)
-def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi):
+def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, noise_coef):
     '''
     Получение данных по погружению:
     x -- глубина погружения;
@@ -113,7 +113,7 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi):
     w = [w0, w0]  # количество оборотов в секунду в каждый момент времени
     i = 2  # порядковый номер момента времени
 
-    noise = np.random.normal(0, 10e-4, n)
+    noise = np.random.normal(0, noise_coef, n)
     fimp_0 = sum_(List([m[k] * R[k] * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta[k]) for k in range(n)]))
     fimp_noise_0 = sum_(List([m[k] * R[k] * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta_noise[k]) for k in range(n)]))
     for k in range(n):
@@ -137,7 +137,7 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi):
     period = int(1 / dt)
     # пока количество оборотов меньше критического и глубина погружения меньше длины сваи
     while w0 < 50 and x[i - 1] < l:
-        noise = np.random.normal(0, 10e-4, n)
+        noise = np.random.normal(0, noise_coef, n)
         for k in range(n):
             theta[k] += w0 * (k + 1) * dt * 2 * math.pi
             theta_noise[k] += w0 * (k + 1) * (1 + noise[k]) * dt * 2 * math.pi
@@ -169,14 +169,15 @@ if __name__ == '__main__':
     l = 0.6  # длина сваи (м)
     # P = 0.02 * 4  # периметр сваи (м)
     P = 0.04 * 4  # периметр сваи (м)
-    S = 0.04 * 0.04  # площадь сечения сваи (м^2)
+    S = 0.02 * 0.02 - 0.018 * 0.018  # площадь сечения сваи (м^2)
     # M = 37 + (l * 3.14)  # вес машинки + сваи (кг)
     M = 175 + (l * 3.14*4)  # вес машинки + сваи (кг)
     gamma_cr = 1.1  # коэффициент условий работы грунта под нижним концом сваи
     gamma_cf = 1.0  # коэффициент условий работы грунта на боковой поверхности
     fi = 35000.0  # расчётное сопротивлене по боковой поверхности (кПа)
+    noise_coef = 10e-4
 
-    x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi)
+    x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, noise_coef)
 
     f, axarr = plt.subplots(4, sharex=True)
     f.subplots_adjust(hspace=0.4)

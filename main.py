@@ -55,7 +55,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.start_button.clicked.connect(self.start_draw)
         self.stop_button.clicked.connect(self.stop_draw)
 
-        float_validator = QtGui.QDoubleValidator(0.0, 5.0, 2)
+        float_validator = QtGui.QDoubleValidator(0.0, 5.0, 10)
         int_validator = QtGui.QIntValidator(0, 10)
         float_validator.setLocale(QtCore.QLocale(QtCore.QLocale.English))
 
@@ -66,7 +66,10 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
                        self.plunger_weight_edit,
                        self.coef_lower_pile_edit,
                        self.coef_soil_pile_edit,
-                       self.resistance_surface_edit):
+                       self.resistance_surface_edit,
+                       self.pile_m_weight_edit,
+                       self.pile_thickness_edit,
+                       self.noise_coef_edit):
             widget.textChanged.connect(self.param_change)
             widget.setValidator(float_validator)
 
@@ -128,19 +131,38 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
     def scan_param(self):
         self.g = 9.81
-        self.n = int(self.plunger_pairs_edit.text())  # количество пар дебалансов
-        self.dt = float(self.time_step_edit.text())  # шаг по времени
-        self.l = float(self.pile_length_edit.text())  # длина сваи (м)
+        # Количество пар дебалансов
+        self.n = int(self.plunger_pairs_edit.text())
+        # Шаг по времени
+        self.dt = float(self.time_step_edit.text())
+        # Длина сваи (м)
+        self.l = float(self.pile_length_edit.text())
+        # Ширина сваи (м)
         self.width_pipe = float(self.pile_width_edit.text())
+        # Глубина сваи (м)
         self.depth_pipe = float(self.pile_depth_edit.text())
-        self.pile_perimeter = self.width_pipe * 2 + self.depth_pipe * 2  # периметр основания сваи (м)
-        self.pile_area = self.width_pipe * self.depth_pipe  # площадь основания сваи (м^2)
-        self.plunger_weight = float(self.plunger_weight_edit.text())  # вес погружателя
-        self.pile_weight = self.l * 3.14 * 4  # (3.14 - плотность)
-        self.M = self.plunger_weight + self.pile_weight  # вес машинки + сваи (кг)
-        self.gamma_cr = float(self.coef_lower_pile_edit.text())  # коэффициент условий работы грунта под нижним концом сваи
-        self.gamma_cf = float(self.coef_soil_pile_edit.text())  # коэффициент условий работы грунта на боковой поверхности
-        self.fi = float(self.resistance_surface_edit.text())  # расчётное сопротивлене по боковой поверхности (кПа)
+        # Толщина стенки сваи (м)
+        self.pile_thickness = float(self.pile_thickness_edit.text())
+        # Периметр основания сваи (м)
+        self.pile_perimeter = self.width_pipe * 2 + self.depth_pipe * 2
+        # Площадь основания сваи (м^2)
+        self.pile_area = self.width_pipe * self.depth_pipe - (self.width_pipe - self.pile_thickness) * (self.depth_pipe - self.pile_thickness)
+        # Вес погружателя (кг)
+        self.plunger_weight = float(self.plunger_weight_edit.text())
+        # Вес 1 метра сваи (кг)
+        self.pile_weight_m = float(self.pile_m_weight_edit.text())
+        # Вес всей сваи (кг)
+        self.pile_weight = self.l * self.pile_weight_m * 4
+        # Вес машинки + сваи (кг)
+        self.M = self.plunger_weight + self.pile_weight
+        # Коэффициент условий работы грунта под нижним концом сваи
+        self.gamma_cr = float(self.coef_lower_pile_edit.text())
+        # Коэффициент условий работы грунта на боковой поверхности
+        self.gamma_cf = float(self.coef_soil_pile_edit.text())
+        # Расчётное сопротивлене по боковой поверхности (кПа)
+        self.fi = float(self.resistance_surface_edit.text())
+        # Коэффициент шума
+        self.noise_coef = float(self.noise_coef_edit.text())
 
     def param_change(self, s):
         if s:
@@ -174,7 +196,8 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
                 self.M,
                 self.gamma_cr,
                 self.gamma_cf,
-                self.fi
+                self.fi,
+                self.noise_coef
             )
             self.default_line_step = len(self.x) // 3500
             self.dynamic_line_step = self.default_line_step * self.speed_slider.value()
