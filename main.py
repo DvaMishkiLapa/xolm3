@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+# import random
 import sys
 
 import matplotlib
@@ -114,10 +115,18 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.axarr_1.set_data(cut_t, cut_w)
             self.axarr_2.set_data(cut_t, cut_impulse)
             self.axarr_3.set_data(cut_t, cut_impulse_noise)
+            # r = lambda: random.randint(0, 255)
+            # self.axarr_0.set_color('#%02X%02X%02X' % (r(), r(), r()))
+            # self.axarr_1.set_color('#%02X%02X%02X' % (r(), r(), r()))
+            # self.axarr_2.set_color('#%02X%02X%02X' % (r(), r(), r()))
+            # self.axarr_3.set_color('#%02X%02X%02X' % (r(), r(), r()))
             for a in range(4):
                 self.sc.axarr[a].relim()
                 self.sc.axarr[a].autoscale_view()
-            self.sc.axarr[0].set_xlim(cut_t[-1] - 1, cut_t[-1] + .05)
+            if self.tracking_toggle.isChecked():
+                self.sc.axarr[0].set_xlim(cut_t[-1] - .1, cut_t[-1] + .01)
+            else:
+                self.sc.axarr[0].set_xlim(auto='auto')
             self.time_edit.setText(str(round(cut_t[-1], 2)))
             self.depth_edit.setText(str(round(cut_x[-1], 2)))
             self.speed_edit.setText(str(round(cut_w[-1], 2)))
@@ -198,7 +207,10 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
                 self.fi,
                 self.noise_coef
             )
-            self.default_line_step = len(self.x) // 3500
+            if len(self.x) < 3500:
+                self.default_line_step = 1
+            else:
+                self.default_line_step = len(self.x) // 3500
             self.dynamic_line_step = self.default_line_step * self.speed_slider.value()
             self.timer.start(self.timer_ms)
         elif self.started_status == 'PAUSE':
