@@ -274,6 +274,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.setContentsMargins(6, 6, 6, 0)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
         self.progress_status = QtWidgets.QPushButton(self.graps)
+        self.progress_status.setAutoRepeat(True)
         self.progress_status.setFlat(True)
         self.progress_status.setObjectName("progress_status")
         self.verticalLayout_7.addWidget(self.progress_status)
@@ -427,7 +428,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.tabWidget, self.time_step_edit)
         MainWindow.setTabOrder(self.time_step_edit, self.pile_length_edit)

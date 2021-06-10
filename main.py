@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# import random
+import random
 import sys
 
 import matplotlib
@@ -14,6 +14,7 @@ import mainwindow
 import pogruzhatel_jit
 
 matplotlib.use('Qt5Agg')
+r = lambda: random.randint(0, 255)
 
 
 class MplCanvas(FigureCanvasQTAgg):
@@ -79,6 +80,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             widget.setValidator(int_validator)
 
         self.speed_slider.valueChanged.connect(self.speed_boost)
+        self.progress_status.pressed.connect(self.eg)
 
         self.sc = MplCanvas(self)
         self.draw_box_layout.addWidget(self.sc)
@@ -100,6 +102,12 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.dynamic_line_step = 0
         self.current_step = 0
 
+        self.egg = -42
+
+    def eg(self):
+        print(self.egg)
+        self.egg += 1
+
     def speed_boost(self, s):
         self.dynamic_line_step = self.default_line_step * s
 
@@ -115,11 +123,15 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.axarr_1.set_data(cut_t, cut_w)
             self.axarr_2.set_data(cut_t, cut_impulse)
             self.axarr_3.set_data(cut_t, cut_impulse_noise)
-            # r = lambda: random.randint(0, 255)
-            # self.axarr_0.set_color('#%02X%02X%02X' % (r(), r(), r()))
-            # self.axarr_1.set_color('#%02X%02X%02X' % (r(), r(), r()))
-            # self.axarr_2.set_color('#%02X%02X%02X' % (r(), r(), r()))
-            # self.axarr_3.set_color('#%02X%02X%02X' % (r(), r(), r()))
+            if not self.egg:
+                self.axarr_0.set_color('#%02X%02X%02X' % (r(), r(), r()))
+                self.axarr_1.set_color('#%02X%02X%02X' % (r(), r(), r()))
+                self.axarr_2.set_color('#%02X%02X%02X' % (r(), r(), r()))
+                self.axarr_3.set_color('#%02X%02X%02X' % (r(), r(), r()))
+                self.axarr_0.set_linewidth(r())
+                self.axarr_1.set_linewidth(r())
+                self.axarr_2.set_linewidth(r())
+                self.axarr_3.set_linewidth(r())
             for a in range(4):
                 self.sc.axarr[a].relim()
                 self.sc.axarr[a].autoscale_view()
