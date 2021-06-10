@@ -110,7 +110,6 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         cut_impulse = self.impulse[:self.current_step]
         cut_impulse_noise = self.impulse_noise[:self.current_step]
         if len(self.t) >= self.current_step:
-            # self.sc.axarr[0].set_xlim(cut_t[0] - 3, cut_t[-1] + 1)
             self.axarr_0.set_data(cut_t, cut_x)
             self.axarr_1.set_data(cut_t, cut_w)
             self.axarr_2.set_data(cut_t, cut_impulse)
@@ -118,7 +117,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             for a in range(4):
                 self.sc.axarr[a].relim()
                 self.sc.axarr[a].autoscale_view()
-
+            self.sc.axarr[0].set_xlim(cut_t[-1] - 1, cut_t[-1] + .05)
             self.time_edit.setText(str(round(cut_t[-1], 2)))
             self.depth_edit.setText(str(round(cut_x[-1], 2)))
             self.speed_edit.setText(str(round(cut_w[-1], 2)))
