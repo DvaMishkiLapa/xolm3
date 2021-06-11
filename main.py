@@ -14,7 +14,7 @@ import mainwindow
 import pogruzhatel_jit
 
 matplotlib.use('Qt5Agg')
-r = lambda: random.randint(0, 255)
+r = lambda: random.randint(0, 42)
 
 
 class MplCanvas(FigureCanvasQTAgg):
@@ -105,7 +105,6 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.egg = -42
 
     def eg(self):
-        print(self.egg)
         self.egg += 1
 
     def speed_boost(self, s):
@@ -118,16 +117,12 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         cut_w = self.w[:self.current_step]
         cut_impulse = self.impulse[:self.current_step]
         cut_impulse_noise = self.impulse_noise[:self.current_step]
-        if len(self.t) >= self.current_step:
+        if len(self.t) >= self.current_step - self.dynamic_line_step:
             self.axarr_0.set_data(cut_t, cut_x)
             self.axarr_1.set_data(cut_t, cut_w)
             self.axarr_2.set_data(cut_t, cut_impulse)
             self.axarr_3.set_data(cut_t, cut_impulse_noise)
             if not self.egg:
-                self.axarr_0.set_color('#%02X%02X%02X' % (r(), r(), r()))
-                self.axarr_1.set_color('#%02X%02X%02X' % (r(), r(), r()))
-                self.axarr_2.set_color('#%02X%02X%02X' % (r(), r(), r()))
-                self.axarr_3.set_color('#%02X%02X%02X' % (r(), r(), r()))
                 self.axarr_0.set_linewidth(r())
                 self.axarr_1.set_linewidth(r())
                 self.axarr_2.set_linewidth(r())
@@ -149,9 +144,14 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.sc.fig.canvas.draw()
             self.sc.fig.canvas.flush_events()
         else:
-            self.stop_draw()
-            if self.progress_bar.value != 100:
+            self.timer.stop()
+            self.started_status = 'STOP'
+            if self.progress_bar.value() != 100:
                 self.progress_status.setText('Свая погружена не полностью')
+            else:
+                self.progress_status.setText('Свая погружена полностью')
+            self.start_button.setText('Старт')
+            self.current_step = 0
 
     def scan_param(self):
         self.g = 9.81
