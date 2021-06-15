@@ -221,6 +221,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.axarr_2.set_data(0, 0)
             self.axarr_3.set_data(0, 0)
             self.progress_bar.setValue(0)
+            self.move_pogr(0)
             self.scan_param()
             self.x, self.t, self.w, self.impulse, self.impulse_noise = pogruzhatel_jit.main(
                 self.g,
