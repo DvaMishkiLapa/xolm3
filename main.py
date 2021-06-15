@@ -99,10 +99,26 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.dynamic_line_step = 0
         self.current_step = 0
 
-        self.egg = -42
+        self.pogr_label = QtWidgets.QLabel(self.widged_pile_draw)
+        pogr_img = QtGui.QPixmap('img/pogr.png')
+        pogr_img = pogr_img.scaled(50, 200, QtCore.Qt.KeepAspectRatioByExpanding, QtCore.Qt.SmoothTransformation)
+        self.pogr_label.setPixmap(pogr_img)
+        self.move_pogr(0)
 
-    def eg(self):
-        self.egg += 1
+        self.round_line = QtWidgets.QLabel(self.widged_pile_draw)
+        self.round_line.setStyleSheet('background-color: black;')
+        self.round_line.setGeometry(QtCore.QRect(
+            0,
+            int(self.widged_pile_draw.height() / 2),
+            self.widged_pile_draw.height() + 10,
+            4,
+        ))
+
+    def move_pogr(self, down):
+        self.pogr_label.move(
+            140,
+            down
+        )
 
     def speed_boost(self, s):
         self.dynamic_line_step = self.default_line_step * s
@@ -133,6 +149,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.impulse_noise_edit.setText(str(round(cut_impulse_noise[-1], 2)))
             if cut_x[-1]:
                 self.progress_bar.setValue(int(cut_x[-1] / self.l * 100))
+                self.move_pogr(self.progress_bar.value())
             self.sc.fig.canvas.draw()
             self.sc.fig.canvas.flush_events()
         else:
