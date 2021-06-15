@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import random
 import sys
 
 import matplotlib
@@ -14,7 +13,6 @@ import mainwindow
 import pogruzhatel_jit
 
 matplotlib.use('Qt5Agg')
-r = lambda: random.randint(0, 42)
 
 
 class MplCanvas(FigureCanvasQTAgg):
@@ -80,7 +78,6 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             widget.setValidator(int_validator)
 
         self.speed_slider.valueChanged.connect(self.speed_boost)
-        self.progress_status.pressed.connect(self.eg)
 
         self.sc = MplCanvas(self)
         self.draw_box_layout.addWidget(self.sc)
@@ -122,11 +119,6 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.axarr_1.set_data(cut_t, cut_w)
             self.axarr_2.set_data(cut_t, cut_impulse)
             self.axarr_3.set_data(cut_t, cut_impulse_noise)
-            if not self.egg:
-                self.axarr_0.set_linewidth(r())
-                self.axarr_1.set_linewidth(r())
-                self.axarr_2.set_linewidth(r())
-                self.axarr_3.set_linewidth(r())
             for a in range(4):
                 self.sc.axarr[a].relim()
                 self.sc.axarr[a].autoscale_view()
@@ -147,9 +139,9 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.timer.stop()
             self.started_status = 'STOP'
             if self.progress_bar.value() != 100:
-                self.progress_status.setText('Свая погружена не полностью')
+                self.params_group_box.setTitle('Свая погружена не полностью')
             else:
-                self.progress_status.setText('Свая погружена полностью')
+                self.params_group_box.setTitle('Свая погружена полностью')
             self.start_button.setText('Старт')
             self.current_step = 0
 
@@ -202,11 +194,11 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.timer.stop()
             self.started_status = 'PAUSE'
             self.start_button.setText('Старт')
-            self.progress_status.setText('Погружение приостановлено')
+            self.params_group_box.setTitle('Погружение приостановлено')
         elif self.started_status == 'STOP':
             self.started_status = 'START'
             self.start_button.setText('Пауза')
-            self.progress_status.setText('Расчет данных...')
+            self.params_group_box.setTitle('Расчет данных...')
             self.axarr_0.set_data(0, 0)
             self.axarr_1.set_data(0, 0)
             self.axarr_2.set_data(0, 0)
@@ -230,20 +222,20 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
                 self.default_line_step = 1
             else:
                 self.default_line_step = len(self.x) // 3500
-            self.progress_status.setText('Погружение...')
+            self.params_group_box.setTitle('Погружение...')
             self.dynamic_line_step = self.default_line_step * self.speed_slider.value()
             self.timer.start(self.timer_ms)
         elif self.started_status == 'PAUSE':
             self.timer.start(self.timer_ms)
             self.started_status = 'START'
             self.start_button.setText('Пауза')
-            self.progress_status.setText('Погружение...')
+            self.params_group_box.setTitle('Погружение...')
 
     def stop_draw(self):
         self.timer.stop()
         self.started_status = 'STOP'
         self.start_button.setText('Старт')
-        self.progress_status.setText('Погружение не начато')
+        self.params_group_box.setTitle('Погружение не начато')
         self.current_step = 0
 
 
