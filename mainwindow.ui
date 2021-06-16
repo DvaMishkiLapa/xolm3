@@ -439,48 +439,6 @@
              </item>
             </layout>
            </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_7">
-             <item>
-              <widget class="QLabel" name="label_7">
-               <property name="minimumSize">
-                <size>
-                 <width>440</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Материал сваи</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="pile_type">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <item>
-                <property name="text">
-                 <string>Бетон</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Сталь</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Пластик</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-            </layout>
-           </item>
           </layout>
          </widget>
         </item>
@@ -1040,7 +998,6 @@
   <tabstop>pile_length_edit</tabstop>
   <tabstop>pile_width_edit</tabstop>
   <tabstop>pile_depth_edit</tabstop>
-  <tabstop>pile_type</tabstop>
   <tabstop>plunger_pairs_edit</tabstop>
   <tabstop>plunger_weight_edit</tabstop>
   <tabstop>coef_lower_pile_edit</tabstop>
