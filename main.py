@@ -45,7 +45,6 @@ class MplCanvas(FigureCanvasQTAgg):
         self.axarr[3].set_title(r'$\Sigma$ - импульс с шумом')
 
 
-# Class main form
 class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
     def __init__(self):
@@ -77,6 +76,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             widget.textChanged.connect(self.param_change)
             widget.setValidator(int_validator)
 
+        self.tracking_toggle_box.currentIndexChanged.connect(self.tracking_mode)
         self.speed_slider.valueChanged.connect(self.speed_boost)
 
         self.sc = MplCanvas(self)
@@ -114,6 +114,17 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             4,
         ))
 
+    def set_time_limit_garps(self, time, factor):
+        index = self.tracking_toggle_box.currentIndex()
+        if index == 1:  # Фиксированное
+            self.sc.axarr[0].set_xlim(time - .1, time + .01)
+        elif index == 2:  # Динамичческое
+            self.sc.axarr[0].set_xlim(time - .05 * factor, time + .005 * factor)
+
+    def tracking_mode(self, i):
+        if not i:
+            self.sc.axarr[0].set_xlim(auto='auto')
+
     def move_pogr(self, down):
         self.pogr_label.move(
             140,
@@ -138,10 +149,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             for a in range(4):
                 self.sc.axarr[a].relim()
                 self.sc.axarr[a].autoscale_view()
-            if self.tracking_toggle.isChecked():
-                self.sc.axarr[0].set_xlim(cut_t[-1] - .1, cut_t[-1] + .01)
-            else:
-                self.sc.axarr[0].set_xlim(auto='auto')
+            self.set_time_limit_garps(cut_t[-1], cut_w[-1])
             self.time_edit.setText(str(round(cut_t[-1], 2)))
             self.depth_edit.setText(str(round(cut_x[-1], 2)))
             self.speed_edit.setText(str(round(cut_w[-1], 2)))

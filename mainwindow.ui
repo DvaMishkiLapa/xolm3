@@ -48,7 +48,7 @@
        <enum>Qt::LeftToRight</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="params">
        <attribute name="title">
@@ -743,7 +743,7 @@
                 <widget class="QLabel" name="label_19">
                  <property name="minimumSize">
                   <size>
-                   <width>215</width>
+                   <width>190</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -767,7 +767,7 @@
                 <widget class="QLabel" name="label_18">
                  <property name="minimumSize">
                   <size>
-                   <width>215</width>
+                   <width>190</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -791,7 +791,7 @@
                 <widget class="QLabel" name="label_15">
                  <property name="minimumSize">
                   <size>
-                   <width>215</width>
+                   <width>190</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -815,7 +815,7 @@
                 <widget class="QLabel" name="label_17">
                  <property name="minimumSize">
                   <size>
-                   <width>215</width>
+                   <width>190</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -839,7 +839,7 @@
                 <widget class="QLabel" name="label_16">
                  <property name="minimumSize">
                   <size>
-                   <width>215</width>
+                   <width>190</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -903,13 +903,6 @@
               <number>4</number>
              </property>
              <item>
-              <widget class="QCheckBox" name="tracking_toggle">
-               <property name="text">
-                <string>Слежение за последней точкой</string>
-               </property>
-              </widget>
-             </item>
-             <item>
               <layout class="QHBoxLayout" name="horizontalLayout_16">
                <item>
                 <widget class="QPushButton" name="start_button">
@@ -947,6 +940,47 @@
                 </widget>
                </item>
               </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <item>
+                <widget class="QLabel" name="label_7">
+                 <property name="text">
+                  <string>Слежение за
+последней точкой</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="tracking_toggle_box">
+                 <property name="currentIndex">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Нет</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Фиксированное</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Динамическое</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_17">
