@@ -25,6 +25,13 @@
   <property name="windowTitle">
    <string>Xolm3</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>img/ico.ico</normaloff>img/ico.ico</iconset>
+  </property>
+  <property name="windowOpacity">
+   <double>1.000000000000000</double>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
