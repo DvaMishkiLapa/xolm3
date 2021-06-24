@@ -246,10 +246,10 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
                 self.fi,
                 self.noise_coef
             )
-            if len(self.x) < 3500:
+            if len(self.x) < 2700:
                 self.default_line_step = 1
             else:
-                self.default_line_step = len(self.x) // 3500
+                self.default_line_step = len(self.x) // 2700
             self.params_group_box.setTitle('Погружение...')
             self.dynamic_line_step = self.default_line_step * self.speed_slider.value()
             self.timer.start(self.timer_ms)

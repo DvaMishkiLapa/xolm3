@@ -10,7 +10,6 @@ from numba.typed import List
 def resist(x: float, gamma_cr: float, S: float) -> float:
     '''
     Возращает лобовое сопротивление сваи на глубине `x`.
-
     x -- глубина погружения;
     gamma_cr -- коэффициент условий работы грунта под нижним концом сваи;
     S -- площадь сечения сваи (м^2).
@@ -28,6 +27,8 @@ def resist(x: float, gamma_cr: float, S: float) -> float:
         9 < x <= 10: 4000000 * gamma_cr * S
     }[True]
 
+    # return 6900 * 1000 * gamma_cr * S
+
 
 @jit(nopython=True)
 def xi(x, i, fimp, P, ft, dtm, fi, fls):
@@ -40,7 +41,7 @@ def xi(x, i, fimp, P, ft, dtm, fi, fls):
     if f > 0:
         return x[i-1] + max(max(f - fls * dtm, 0) - fbs * dtm, 0)
 
-    if f + fbs * dtm < 0:
+    if f + ft + fbs * dtm < 0:
         print('Свая сломалась на', i, 'итерации :(')
         raise RuntimeError
 
@@ -78,7 +79,8 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, noise_coef):
     fi -- расчётное сопротивлене по боковой поверхности (кПа)
     '''
 
-    # массы дебалансов
+    dw = 0.25  # шаг по количеству оборотов в секунду
+
     m = [
         2.75758026171761,
         0.969494952543874,
@@ -153,7 +155,7 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, noise_coef):
             # если за текущую итерацию свая погрузилась меньше, чем на 1 см
             if abs(x[i] - x[i - period]) <= 0.01:
                 # увеличиваем обороты погружателя
-                w0 += 1
+                w0 += dw
         w.append(w0)
         i += 1
 
