@@ -840,30 +840,6 @@
                </item>
               </layout>
              </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_19">
-               <item>
-                <widget class="QLabel" name="label_16">
-                 <property name="minimumSize">
-                  <size>
-                   <width>190</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Импульс с шумом</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="impulse_noise_edit">
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
             </layout>
            </widget>
           </item>
@@ -1050,7 +1026,6 @@
   <tabstop>depth_edit</tabstop>
   <tabstop>speed_edit</tabstop>
   <tabstop>impulse_edit</tabstop>
-  <tabstop>impulse_noise_edit</tabstop>
   <tabstop>start_button</tabstop>
   <tabstop>stop_button</tabstop>
  </tabstops>

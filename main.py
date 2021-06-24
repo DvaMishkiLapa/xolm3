@@ -18,11 +18,12 @@ matplotlib.use('Qt5Agg')
 class MplCanvas(FigureCanvasQTAgg):
 
     def __init__(self, parent=None):
-        self.fig, self.axarr = plt.subplots(4, sharex=True)
+        subplots = 3
+        self.fig, self.axarr = plt.subplots(subplots, sharex=True)
         self.labels_enable()
         self.fig.subplots_adjust(
             left=.1,
-            bottom=.05,
+            bottom=.08,
             right=.96,
             top=.96,
             hspace=0.4,
@@ -30,7 +31,7 @@ class MplCanvas(FigureCanvasQTAgg):
         self.grid_enable()
         super(MplCanvas, self).__init__(self.fig)
 
-        for i in range(4):
+        for i in range(subplots):
             self.axarr[i].spines['top'].set_visible(False)
             self.axarr[i].spines['right'].set_visible(False)
 
@@ -42,7 +43,8 @@ class MplCanvas(FigureCanvasQTAgg):
         self.axarr[0].set_title(r'$x(t)$ - глубина погружения, м')
         self.axarr[1].set_title(r'$\omega$ - количество оборотов в секунду')
         self.axarr[2].set_title(r'$\Sigma$ - импульс')
-        self.axarr[3].set_title(r'$\Sigma$ - импульс с шумом')
+        self.axarr[2].set_xlabel('Время (сек.)')
+        # self.axarr[3].set_title(r'$\Sigma$ - импульс с шумом')
 
 
 class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
@@ -85,7 +87,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.axarr_0, = self.sc.axarr[0].plot(0, 0, linewidth=2, color='r')
         self.axarr_1, = self.sc.axarr[1].plot(0, 0, linewidth=2, color='g')
         self.axarr_2, = self.sc.axarr[2].plot(0, 0, linewidth=2, color='b')
-        self.axarr_3, = self.sc.axarr[3].plot(0, 0, linewidth=2, color='m')
+        # self.axarr_3, = self.sc.axarr[3].plot(0, 0, linewidth=2, color='m')
 
         self.started_status = 'STOP'
 
@@ -140,13 +142,13 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         cut_x = self.x[:self.current_step]
         cut_w = self.w[:self.current_step]
         cut_impulse = self.impulse[:self.current_step]
-        cut_impulse_noise = self.impulse_noise[:self.current_step]
+        # cut_impulse_noise = self.impulse_noise[:self.current_step]
         if len(self.t) >= self.current_step - self.dynamic_line_step:
             self.axarr_0.set_data(cut_t, cut_x)
             self.axarr_1.set_data(cut_t, cut_w)
             self.axarr_2.set_data(cut_t, cut_impulse)
-            self.axarr_3.set_data(cut_t, cut_impulse_noise)
-            for a in range(4):
+            # self.axarr_3.set_data(cut_t, cut_impulse_noise)
+            for a in range(3):
                 self.sc.axarr[a].relim()
                 self.sc.axarr[a].autoscale_view()
             self.set_time_limit_garps(cut_t[-1], cut_w[-1])
@@ -154,7 +156,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.depth_edit.setText(str(round(cut_x[-1], 2)))
             self.speed_edit.setText(str(round(cut_w[-1], 2)))
             self.impulse_edit.setText(str(round(cut_impulse[-1], 2)))
-            self.impulse_noise_edit.setText(str(round(cut_impulse_noise[-1], 2)))
+            # self.impulse_noise_edit.setText(str(round(cut_impulse_noise[-1], 2)))
             if cut_x[-1]:
                 self.progress_bar.setValue(int(cut_x[-1] / self.l * 100))
                 self.move_pogr(self.progress_bar.value())
@@ -227,7 +229,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.axarr_0.set_data(0, 0)
             self.axarr_1.set_data(0, 0)
             self.axarr_2.set_data(0, 0)
-            self.axarr_3.set_data(0, 0)
+            # self.axarr_3.set_data(0, 0)
             self.progress_bar.setValue(0)
             self.move_pogr(0)
             self.scan_param()
