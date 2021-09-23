@@ -88,14 +88,14 @@
                 </size>
                </property>
                <property name="text">
-                <string>Кол-во пар дебалансов</string>
+                <string>Шаг увеличения оборотов в минуту</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="plunger_pairs_edit">
+              <widget class="QLineEdit" name="speed_step_edit">
                <property name="text">
-                <string>6</string>
+                <string>0.25</string>
                </property>
                <property name="maxLength">
                 <number>100</number>
@@ -265,7 +265,7 @@
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>240</height>
+            <height>266</height>
            </size>
           </property>
           <property name="title">
@@ -1015,7 +1015,7 @@
   <tabstop>pile_length_edit</tabstop>
   <tabstop>pile_width_edit</tabstop>
   <tabstop>pile_depth_edit</tabstop>
-  <tabstop>plunger_pairs_edit</tabstop>
+  <tabstop>speed_step_edit</tabstop>
   <tabstop>plunger_weight_edit</tabstop>
   <tabstop>coef_lower_pile_edit</tabstop>
   <tabstop>coef_soil_pile_edit</tabstop>

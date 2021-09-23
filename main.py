@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5agg import \
     NavigationToolbar2QT as NavigationToolbar2
+from numba.typed import List
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import mainwindow
@@ -57,13 +58,14 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.stop_button.clicked.connect(self.stop_draw)
 
         float_validator = QtGui.QDoubleValidator(0.0, 5.0, 10)
-        int_validator = QtGui.QIntValidator(0, 10)
+        # int_validator = QtGui.QIntValidator(0, 10)
         float_validator.setLocale(QtCore.QLocale(QtCore.QLocale.English))
 
         for widget in (self.time_step_edit,
                        self.pile_length_edit,
                        self.pile_width_edit,
                        self.pile_depth_edit,
+                       self.speed_step_edit,
                        self.plunger_weight_edit,
                        self.coef_lower_pile_edit,
                        self.coef_soil_pile_edit,
@@ -73,10 +75,6 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
                        self.noise_coef_edit):
             widget.textChanged.connect(self.param_change)
             widget.setValidator(float_validator)
-
-        for widget in (self.plunger_pairs_edit,):
-            widget.textChanged.connect(self.param_change)
-            widget.setValidator(int_validator)
 
         self.tracking_toggle_box.currentIndexChanged.connect(self.tracking_mode)
         self.speed_slider.valueChanged.connect(self.speed_boost)
@@ -120,7 +118,7 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         index = self.tracking_toggle_box.currentIndex()
         if index == 1:  # Фиксированное
             self.sc.axarr[0].set_xlim(time - .1, time + .01)
-        elif index == 2:  # Динамичческое
+        elif index == 2:  # Динамическое
             self.sc.axarr[0].set_xlim(time - .05 * factor, time + .005 * factor)
 
     def tracking_mode(self, i):
@@ -174,8 +172,6 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
     def scan_param(self):
         self.g = 9.81
-        # Количество пар дебалансов
-        self.n = int(self.plunger_pairs_edit.text())
         # Шаг по времени
         self.dt = float(self.time_step_edit.text())
         # Длина сваи (м)
@@ -196,6 +192,8 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.pile_weight_m = float(self.pile_m_weight_edit.text())
         # Вес всей сваи (кг)
         self.pile_weight = self.l * self.pile_weight_m * 4
+        # Шаг увеличения оборотов в минуту
+        self.speed_step = float(self.speed_step_edit.text())
         # Вес машинки + сваи (кг)
         self.M = self.plunger_weight + self.pile_weight
         # Коэффициент условий работы грунта под нижним концом сваи
@@ -206,6 +204,31 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.fi = float(self.resistance_surface_edit.text())
         # Коэффициент шума
         self.noise_coef = float(self.noise_coef_edit.text())
+        # Масса дебалансов
+        self.m_debs = [
+            2.75758026171761,
+            0.969494952543874,
+            0.486348994233291,
+            0.273755006621712,
+            0.155229853500278,
+            0.076567059516108
+        ]
+        # Радиусы дебалансов
+        self.R_debs = [
+            0.020070401444444,
+            0.011900487555556,
+            0.008428804666667,
+            0.006323725555556,
+            0.004761892666667,
+            0.003344359555556
+        ]
+        # Табличные значения
+        # t_table = [0.0, 6.0, 12.0, 18.0, 23.0, 27.0, 34.0, 40.0, 44.0, 55.0, 61.0, 64.0, 72.0, 77.0, 82.0, 86.0, 90.0, 99.0,
+        #         105.0, 113.0, 120.0, 125.0, 135.0, 150.0, 158.0, 185.0, 203.0, 230.0, 263.0, 276.0, 285.0, 291.0, 310.0, 320.0]
+        # x_table = [0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.03, 0.03, 0.03, 0.03, 0.04,
+        #         0.04, 0.04, 0.045, 0.05, 0.08, 0.2, 0.3, 0.55, 0.6, 0.67, 0.8, 0.9, 0.95, 1.05, 1.15, 1.15]
+        # w_table = [0.0, 5.0, 5.16, 5.33, 5.5, 5.6, 5.8, 6.0, 6.16, 6.33, 6.5, 6.66, 6.83, 7.0, 7.16, 7.33, 7.5, 9.0,
+        #         9.16, 9.83, 10.5, 11.16, 11.83, 13.83, 14.0, 14.4, 14.9, 15.4, 16.7, 17.5, 18.0, 18.5, 19.0, 19.0]
 
     def param_change(self, s):
         if s:
@@ -235,7 +258,6 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
             self.scan_param()
             self.x, self.t, self.w, self.impulse, self.impulse_noise = pogruzhatel_jit.main(
                 self.g,
-                self.n,
                 self.dt,
                 self.l,
                 self.pile_perimeter,
@@ -244,7 +266,10 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
                 self.gamma_cr,
                 self.gamma_cf,
                 self.fi,
-                self.noise_coef
+                self.noise_coef,
+                List(self.m_debs),
+                List(self.R_debs),
+                dw=self.speed_step
             )
             if len(self.x) < 2700:
                 self.default_line_step = 1
