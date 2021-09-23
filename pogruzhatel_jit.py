@@ -62,7 +62,7 @@ def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float) -> float:
 
 
 @jit(nopython=True)
-def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale):
+def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_debs):
     '''
     Получение данных по погружению:
     x -- глубина погружения;
@@ -82,27 +82,11 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale):
     gamma_cr -- коэффициент условий работы грунта под нижним концом сваи
     gamma_cf -- коэффициент условий работы грунта на боковой поверхности
     fi -- расчётное сопротивлене по боковой поверхности (кПа)
+    m_debs -- список масс дебалансов
+    R_debs -- список радиусов дебалансов
     '''
 
     dw = 0.25  # шаг по количеству оборотов в секунду
-
-    m = [
-        2.75758026171761,
-        0.969494952543874,
-        0.486348994233291,
-        0.273755006621712,
-        0.155229853500278,
-        0.076567059516108
-    ]
-    # радиусы дебалансов
-    R = [
-        0.020070401444444,
-        0.011900487555556,
-        0.008428804666667,
-        0.006323725555556,
-        0.004761892666667,
-        0.003344359555556
-    ]
 
     dtm = dt ** 2 / M
     fls = resist(0, gamma_cr, S)
@@ -122,13 +106,13 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale):
 
     rpm_noise = np.random.normal(0, rpm_noise_scale, n)
 
-    fimp_0 = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta[k]) for k in range(n)]))
-    fimp_noise_0 = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta_noise[k]) for k in range(n)]))
+    fimp_0 = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
+    fimp_noise_0 = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta_noise[k]) for k in range(n)]))
     for k in range(n):
         theta[k] += w0 * (k + 1) * dt * 2 * math.pi
         theta_noise[k] += w0 * (k + 1) * (1 + rpm_noise[k]) * dt * 2 * math.pi
-    fimp_1 = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta[k]) for k in range(n)]))
-    fimp_noise_1 = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta_noise[k]) for k in range(n)]))
+    fimp_1 = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
+    fimp_noise_1 = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta_noise[k]) for k in range(n)]))
 
     # # лобовое сопротивление в каждый момент времени
     # all_fls = [resist(x0), resist(x1)]
@@ -149,8 +133,8 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale):
         for k in range(n):
             theta[k] += w0 * (k + 1) * dt * 2 * math.pi
             theta_noise[k] += w0 * (k + 1) * (1 + rpm_noise[k]) * dt * 2 * math.pi
-        fimp = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta[k]) for k in range(n)]))
-        fimp_noise = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta_noise[k]) for k in range(n)]))
+        fimp = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
+        fimp_noise = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta_noise[k]) for k in range(n)]))
         fls = resist(x[i - 1], gamma_cr, S)
         xi_ = xi(x, i, fimp_noise, P, ft, dtm, fi, fls)  # проверка на поломку будет по шуму
         x.append(xi_)
@@ -183,11 +167,31 @@ if __name__ == '__main__':
     gamma_cr = 1.1  # коэффициент условий работы грунта под нижним концом сваи
     gamma_cf = 1.0  # коэффициент условий работы грунта на боковой поверхности
     fi = 35000.0  # расчётное сопротивлене по боковой поверхности (кПа)
-    
+
+    # масса дебалансов
+    m = [
+        2.75758026171761,
+        0.969494952543874,
+        0.486348994233291,
+        0.273755006621712,
+        0.155229853500278,
+        0.076567059516108
+    ]
+
+    # радиусы дебалансов
+    R = [
+        0.020070401444444,
+        0.011900487555556,
+        0.008428804666667,
+        0.006323725555556,
+        0.004761892666667,
+        0.003344359555556
+    ]
+
     # Шумы
     rpm_noise_scale = 10e-4  # cлучайные выборки из нормального (гауссовского) распределения
 
-    x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale)
+    x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R))
 
     f, axarr = plt.subplots(4, sharex=True)
     f.subplots_adjust(hspace=0.4)
