@@ -35,21 +35,21 @@ def xi(x, i, fimp, P, ft, dtm, fi, fls):
     '''
     Считает глубину погружения в момент времени `i`.
     '''
-    f = x[i-1] - x[i-2] + ft * dtm + fimp * dtm
-    fbs = P * fi * x[i-1]
+    f = x[i - 1] - x[i - 2] + ft * dtm + fimp * dtm
+    fbs = P * fi * x[i - 1]
 
     if f > 0:
-        return x[i-1] + max(max(f - fls * dtm, 0) - fbs * dtm, 0)
+        return x[i - 1] + max(max(f - fls * dtm, 0) - fbs * dtm, 0)
 
     if f + ft + fbs * dtm < 0:
         print('Свая сломалась на', i, 'итерации :(')
-        raise RuntimeError
+        1 / 0
 
-    return x[i-1] + min(f + fbs * dtm, 0)
+    return x[i - 1] + min(f + fbs * dtm, 0)
 
 
 @jit(nopython=True)
-def sum_(iterable):
+def sum_(iterable) -> float:
     result = 0
     for x in iterable:
         result += x
