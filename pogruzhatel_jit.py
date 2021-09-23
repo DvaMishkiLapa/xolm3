@@ -62,7 +62,7 @@ def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float) -> float:
 
 
 @jit(nopython=True)
-def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_debs, dw=0, t_table=None, w_table=None):
+def main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_debs, dw=0, t_table=None, w_table=None):
     '''
     Получение данных по погружению:
     x -- глубина погружения;
@@ -88,6 +88,8 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, 
     t_table -- табличные данные времени, по умолчанию не используется
     w_table -- табличные данные оборотов, по умолчанию не используется
     '''
+
+    n = max(len(m_debs), len(R_debs))
 
     dtm = dt ** 2 / M
     fls = resist(0, gamma_cr, S)
@@ -207,7 +209,7 @@ if __name__ == '__main__':
     w_table = [0.0, 5.0, 5.16, 5.33, 5.5, 5.6, 5.8, 6.0, 6.16, 6.33, 6.5, 6.66, 6.83, 7.0, 7.16, 7.33, 7.5, 9.0,
                9.16, 9.83, 10.5, 11.16, 11.83, 13.83, 14.0, 14.4, 14.9, 15.4, 16.7, 17.5, 18.0, 18.5, 19.0, 19.0]
 
-    x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R), dw, List(t_table), List(w_table))
+    x, t, w, all_impulse, all_impulse_noise = main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R), dw, List(t_table), List(w_table))
 
     f, axarr = plt.subplots(3, sharex=True)
     f.subplots_adjust(hspace=0.4)
