@@ -62,7 +62,7 @@ def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float) -> float:
 
 
 @jit(nopython=True)
-def main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_debs, dw=0, t_table=None, w_table=None):
+def main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_debs, dw=0.0, t_table=(0,), w_table=(0,)):
     '''
     Получение данных по погружению:
     x -- глубина погружения;
@@ -99,11 +99,11 @@ def main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_d
     theta_noise = [0.0] * n
 
     # инициализируем списки данными первых двух итераций
-    x0 = 0
-    x1 = max(g * dt ** 2 - fls * dtm, 0)
+    x0 = 0.0
+    x1 = max(g * dt ** 2 - fls * dtm, 0.0)
     x = [x0, x1]  # глубина погружения в каждый момент времени
     t = [0, dt]  # моменты времени
-    w0 = 0  # количество оборотов в секунду в текущий момент времени
+    w0 = 0.0  # количество оборотов в секунду в текущий момент времени
     w = [w0, w0]  # количество оборотов в секунду в каждый момент времени
     i = 2  # порядковый номер момента времени
 
@@ -151,7 +151,7 @@ def main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_d
             if abs(x[i] - x[i - period]) <= 0.01:
                 # увеличиваем обороты погружателя
                 w0 += dw
-        else:
+        elif not i % period:
             if curr_t_index >= len(t_table):
                 w.append(w0)
                 break
@@ -205,11 +205,12 @@ if __name__ == '__main__':
     t_table = [0.0, 6.0, 12.0, 18.0, 23.0, 27.0, 34.0, 40.0, 44.0, 55.0, 61.0, 64.0, 72.0, 77.0, 82.0, 86.0, 90.0, 99.0,
                105.0, 113.0, 120.0, 125.0, 135.0, 150.0, 158.0, 185.0, 203.0, 230.0, 263.0, 276.0, 285.0, 291.0, 310.0, 320.0]
     x_table = [0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.03, 0.03, 0.03, 0.03, 0.04,
-               0.04, 0.04,0.045, 0.05, 0.08, 0.2, 0.3, 0.55, 0.6, 0.67, 0.8, 0.9, 0.95, 1.05, 1.15, 1.15]
+               0.04, 0.04, 0.045, 0.05, 0.08, 0.2, 0.3, 0.55, 0.6, 0.67, 0.8, 0.9, 0.95, 1.05, 1.15, 1.15]
     w_table = [0.0, 5.0, 5.16, 5.33, 5.5, 5.6, 5.8, 6.0, 6.16, 6.33, 6.5, 6.66, 6.83, 7.0, 7.16, 7.33, 7.5, 9.0,
                9.16, 9.83, 10.5, 11.16, 11.83, 13.83, 14.0, 14.4, 14.9, 15.4, 16.7, 17.5, 18.0, 18.5, 19.0, 19.0]
 
-    x, t, w, all_impulse, all_impulse_noise = main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R), dw, List(t_table), List(w_table))
+    x, t, w, all_impulse, all_impulse_noise = main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R), t_table=List(t_table), w_table=List(w_table))
+    # x, t, w, all_impulse, all_impulse_noise = main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R), dw=dw)
 
     f, axarr = plt.subplots(3, sharex=True)
     f.subplots_adjust(hspace=0.4)
