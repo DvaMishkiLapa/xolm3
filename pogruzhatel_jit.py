@@ -57,6 +57,11 @@ def sum_(iterable):
 
 
 @jit(nopython=True)
+def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float) -> float:
+    return m * R * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta)
+
+
+@jit(nopython=True)
 def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, noise_coef):
     '''
     Получение данных по погружению:
@@ -115,14 +120,13 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, noise_coef):
     w = [w0, w0]  # количество оборотов в секунду в каждый момент времени
     i = 2  # порядковый номер момента времени
 
-    noise = np.random.normal(0, noise_coef, n)
-    fimp_0 = sum_(List([m[k] * R[k] * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta[k]) for k in range(n)]))
-    fimp_noise_0 = sum_(List([m[k] * R[k] * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta_noise[k]) for k in range(n)]))
+    fimp_0 = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta[k]) for k in range(n)]))
+    fimp_noise_0 = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta_noise[k]) for k in range(n)]))
     for k in range(n):
         theta[k] += w0 * (k + 1) * dt * 2 * math.pi
         theta_noise[k] += w0 * (k + 1) * (1 + noise[k]) * dt * 2 * math.pi
-    fimp_1 = sum_(List([m[k] * R[k] * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta[k]) for k in range(n)]))
-    fimp_noise_1 = sum_(List([m[k] * R[k] * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta_noise[k]) for k in range(n)]))
+    fimp_1 = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta[k]) for k in range(n)]))
+    fimp_noise_1 = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta_noise[k]) for k in range(n)]))
 
     # # лобовое сопротивление в каждый момент времени
     # all_fls = [resist(x0), resist(x1)]
@@ -143,10 +147,10 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, noise_coef):
         for k in range(n):
             theta[k] += w0 * (k + 1) * dt * 2 * math.pi
             theta_noise[k] += w0 * (k + 1) * (1 + noise[k]) * dt * 2 * math.pi
-        fimp = sum_(List([m[k] * R[k] * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta[k]) for k in range(n)]))
-        fimp_noise = sum_(List([m[k] * R[k] * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta_noise[k]) for k in range(n)]))
-        fls = resist(x[i-1], gamma_cr, S)
-        xi_ = xi(x, i, fimp_noise, P, ft, dtm, fi, fls)
+        fimp = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta[k]) for k in range(n)]))
+        fimp_noise = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta_noise[k]) for k in range(n)]))
+        fls = resist(x[i - 1], gamma_cr, S)
+        xi_ = xi(x, i, fimp_noise, P, ft, dtm, fi, fls)  # проверка на поломку будет по шуму
         x.append(xi_)
         t.append(dt * i)
         all_impulse.append(fimp)
