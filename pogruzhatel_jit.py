@@ -62,7 +62,7 @@ def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float) -> float:
 
 
 @jit(nopython=True)
-def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_debs, dw=0):
+def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_debs, dw=0, t_table=None, w_table=None):
     '''
     Получение данных по погружению:
     x -- глубина погружения;
@@ -85,6 +85,8 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, 
     m_debs -- список масс дебалансов
     R_debs -- список радиусов дебалансов
     dw -- шаг по количеству оборотов в секунду, по умолчанию не используется
+    t_table -- табличные данные времени, по умолчанию не используется
+    w_table -- табличные данные оборотов, по умолчанию не используется
     '''
 
     dtm = dt ** 2 / M
@@ -126,6 +128,8 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, 
     # noise_plot = [0, 0]
 
     period = int(1 / dt)
+
+    curr_t_index = 0
     # пока количество оборотов меньше критического и глубина погружения меньше длины сваи
     while w0 < 50 and x[i - 1] < l:
         rpm_noise = np.random.normal(0, rpm_noise_scale, n)
@@ -140,11 +144,18 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, 
         t.append(dt * i)
         all_impulse.append(fimp)
         all_impulse_noise.append(fimp_noise)
-        if not i % period:
+        if dw and not i % period:  # Выбор способа увеличения оборотов. Если dw=0, идем другим путем
             # если за текущую итерацию свая погрузилась меньше, чем на 1 см
             if abs(x[i] - x[i - period]) <= 0.01:
                 # увеличиваем обороты погружателя
                 w0 += dw
+        else:
+            if curr_t_index >= len(t_table):
+                w.append(w0)
+                break
+            if t[-1] > t_table[curr_t_index]:
+                w0 = w_table[curr_t_index]
+                curr_t_index += 1
         w.append(w0)
         i += 1
 
@@ -188,9 +199,15 @@ if __name__ == '__main__':
     # Шумы
     rpm_noise_scale = 10e-4  # cлучайные выборки из нормального (гауссовского) распределения
 
-    x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R))
+    # Табличные значения
+    t_table = [0.0, 6.0, 12.0, 18.0, 23.0, 27.0, 34.0, 40.0, 44.0, 55.0, 61.0, 64.0, 72.0, 77.0, 82.0, 86.0, 90.0, 99.0,
+               105.0, 113.0, 120.0, 125.0, 135.0, 150.0, 158.0, 185.0, 203.0, 230.0, 263.0, 276.0, 285.0, 291.0, 310.0, 320.0]
+    x_table = [0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.03, 0.03, 0.03, 0.03, 0.04,
+               0.04, 0.04,0.045, 0.05, 0.08, 0.2, 0.3, 0.55, 0.6, 0.67, 0.8, 0.9, 0.95, 1.05, 1.15, 1.15]
+    w_table = [0.0, 5.0, 5.16, 5.33, 5.5, 5.6, 5.8, 6.0, 6.16, 6.33, 6.5, 6.66, 6.83, 7.0, 7.16, 7.33, 7.5, 9.0,
+               9.16, 9.83, 10.5, 11.16, 11.83, 13.83, 14.0, 14.4, 14.9, 15.4, 16.7, 17.5, 18.0, 18.5, 19.0, 19.0]
 
-    x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R), dw)
+    x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R), dw, List(t_table), List(w_table))
 
     f.subplots_adjust(hspace=0.4)
 
