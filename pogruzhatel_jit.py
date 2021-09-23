@@ -14,20 +14,20 @@ def resist(x: float, gamma_cr: float, S: float) -> float:
     gamma_cr -- коэффициент условий работы грунта под нижним концом сваи;
     S -- площадь сечения сваи (м^2).
     '''
-    return {
-        x <= 1: 2900000 * gamma_cr * S,
-        1 < x <= 2: 3000000 * gamma_cr * S,
-        2 < x <= 3: 3100000 * gamma_cr * S,
-        3 < x <= 4: 3200000 * gamma_cr * S,
-        4 < x <= 5: 3400000 * gamma_cr * S,
-        5 < x <= 6: 3600000 * gamma_cr * S,
-        6 < x <= 7: 3700000 * gamma_cr * S,
-        7 < x <= 8: 3800000 * gamma_cr * S,
-        8 < x <= 9: 3900000 * gamma_cr * S,
-        9 < x <= 10: 4000000 * gamma_cr * S
-    }[True]
+    # return {
+    #     x <= 1: 2900000 * gamma_cr * S,
+    #     1 < x <= 2: 3000000 * gamma_cr * S,
+    #     2 < x <= 3: 3100000 * gamma_cr * S,
+    #     3 < x <= 4: 3200000 * gamma_cr * S,
+    #     4 < x <= 5: 3400000 * gamma_cr * S,
+    #     5 < x <= 6: 3600000 * gamma_cr * S,
+    #     6 < x <= 7: 3700000 * gamma_cr * S,
+    #     7 < x <= 8: 3800000 * gamma_cr * S,
+    #     8 < x <= 9: 3900000 * gamma_cr * S,
+    #     9 < x <= 10: 4000000 * gamma_cr * S
+    # }[True]
 
-    # return 6900 * 1000 * gamma_cr * S
+    return 6900 * 1000 * gamma_cr * S
 
 
 @jit(nopython=True)
