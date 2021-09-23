@@ -62,7 +62,7 @@ def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float) -> float:
 
 
 @jit(nopython=True)
-def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, noise_coef):
+def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale):
     '''
     Получение данных по погружению:
     x -- глубина погружения;
@@ -120,11 +120,13 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, noise_coef):
     w = [w0, w0]  # количество оборотов в секунду в каждый момент времени
     i = 2  # порядковый номер момента времени
 
+    rpm_noise = np.random.normal(0, rpm_noise_scale, n)
+
     fimp_0 = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta[k]) for k in range(n)]))
     fimp_noise_0 = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta_noise[k]) for k in range(n)]))
     for k in range(n):
         theta[k] += w0 * (k + 1) * dt * 2 * math.pi
-        theta_noise[k] += w0 * (k + 1) * (1 + noise[k]) * dt * 2 * math.pi
+        theta_noise[k] += w0 * (k + 1) * (1 + rpm_noise[k]) * dt * 2 * math.pi
     fimp_1 = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta[k]) for k in range(n)]))
     fimp_noise_1 = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta_noise[k]) for k in range(n)]))
 
@@ -143,10 +145,10 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, noise_coef):
     period = int(1 / dt)
     # пока количество оборотов меньше критического и глубина погружения меньше длины сваи
     while w0 < 50 and x[i - 1] < l:
-        noise = np.random.normal(0, noise_coef, n)
+        rpm_noise = np.random.normal(0, rpm_noise_scale, n)
         for k in range(n):
             theta[k] += w0 * (k + 1) * dt * 2 * math.pi
-            theta_noise[k] += w0 * (k + 1) * (1 + noise[k]) * dt * 2 * math.pi
+            theta_noise[k] += w0 * (k + 1) * (1 + rpm_noise[k]) * dt * 2 * math.pi
         fimp = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta[k]) for k in range(n)]))
         fimp_noise = sum_(List([get_fimp_el(m[k], R[k], w0, k, theta_noise[k]) for k in range(n)]))
         fls = resist(x[i - 1], gamma_cr, S)
@@ -181,9 +183,11 @@ if __name__ == '__main__':
     gamma_cr = 1.1  # коэффициент условий работы грунта под нижним концом сваи
     gamma_cf = 1.0  # коэффициент условий работы грунта на боковой поверхности
     fi = 35000.0  # расчётное сопротивлене по боковой поверхности (кПа)
-    noise_coef = 10e-4
+    
+    # Шумы
+    rpm_noise_scale = 10e-4  # cлучайные выборки из нормального (гауссовского) распределения
 
-    x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, noise_coef)
+    x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale)
 
     f, axarr = plt.subplots(4, sharex=True)
     f.subplots_adjust(hspace=0.4)
