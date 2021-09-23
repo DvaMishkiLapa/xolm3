@@ -62,7 +62,7 @@ def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float) -> float:
 
 
 @jit(nopython=True)
-def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_debs):
+def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_debs, dw=0):
     '''
     Получение данных по погружению:
     x -- глубина погружения;
@@ -84,9 +84,8 @@ def main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, 
     fi -- расчётное сопротивлене по боковой поверхности (кПа)
     m_debs -- список масс дебалансов
     R_debs -- список радиусов дебалансов
+    dw -- шаг по количеству оборотов в секунду, по умолчанию не используется
     '''
-
-    dw = 0.25  # шаг по количеству оборотов в секунду
 
     dtm = dt ** 2 / M
     fls = resist(0, gamma_cr, S)
@@ -156,17 +155,15 @@ if __name__ == '__main__':
     # параметры системы
     g = 9.81
     n = 6  # количество пар дебалансов
-    dt = 0.0001  # шаг по времени
-    # l = 7  # длина сваи (м)
-    l = 0.6  # длина сваи (м)
-    # P = 0.02 * 4  # периметр сваи (м)
-    P = 0.04 * 4  # периметр сваи (м)
+    dt = 0.001  # шаг по времени
+    dw = 0.01  # шаг по количеству оборотов в секунду
+    l = 1.15  # длина сваи (м)
+    P = 0.02 * 4  # периметр сваи (м)
     S = 0.02 * 0.02 - 0.018 * 0.018  # площадь сечения сваи (м^2)
-    # M = 37 + (l * 3.14)  # вес машинки + сваи (кг)
-    M = 175 + (l * 3.14*4)  # вес машинки + сваи (кг)
+    M = 37 + (l * 1.2)  # вес машинки + сваи (кг)
     gamma_cr = 1.1  # коэффициент условий работы грунта под нижним концом сваи
     gamma_cf = 1.0  # коэффициент условий работы грунта на боковой поверхности
-    fi = 35000.0  # расчётное сопротивлене по боковой поверхности (кПа)
+    fi = 17000.0  # расчётное сопротивлене по боковой поверхности (кПа)
 
     # масса дебалансов
     m = [
@@ -193,7 +190,8 @@ if __name__ == '__main__':
 
     x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R))
 
-    f, axarr = plt.subplots(4, sharex=True)
+    x, t, w, all_impulse, all_impulse_noise = main(g, n, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R), dw)
+
     f.subplots_adjust(hspace=0.4)
 
     axarr[0].plot(t, x, linewidth=2, color='r')
