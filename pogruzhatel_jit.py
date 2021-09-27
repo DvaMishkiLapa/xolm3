@@ -48,8 +48,8 @@ def xi(x, i, fimp, P, ft, dtm, fi, fls):
 
 
 @jit(nopython=True, cache=True)
-def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float) -> float:
-    return m * R * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta)
+def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float, theta_noise_coef: float) -> float:
+    return m * R * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta * theta_noise_coef)
 
 
 @jit(nopython=True, cache=True)
@@ -59,7 +59,10 @@ def main(
     fi,
     m_debs, R_debs,
     m_debs_custom_noise=np.array([0.0]), R_debs_custom_noise=np.array([0.0]),
-    rpm_noise_scale=0.0, m_debs_noise_scale=0.0, R_debs_noise_scale=0.0,
+    theta_noise=0.0,
+    rpm_noise_scale=0.0,
+    m_debs_noise_scale=0.0,
+    R_debs_noise_scale=0.0,
     dw=0.0,
     t_table=np.array([0]), w_table=np.array([0])
 ):
@@ -122,13 +125,15 @@ def main(
     else:
         R_debs_noise = np.random.normal(1, R_debs_noise_scale, n)
 
+    theta_noise_coef = np.random.normal(1, theta_noise)
+
     m_debs = [x * noise for x, noise in zip(m_debs, m_debs_noise)]
     R_debs = [x * noise for x, noise in zip(R_debs, R_debs_noise)]
 
-    fimp_0 = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
+    fimp_0 = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k], theta_noise_coef) for k in range(n)]))
     for k in range(n):
         theta[k] += w0 * (k + 1) * rpm_noise[k] * dt * 2 * math.pi
-    fimp_1 = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
+    fimp_1 = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k], theta_noise_coef) for k in range(n)]))
 
     # # лобовое сопротивление в каждый момент времени
     # all_fls = [resist(x0), resist(x1)]
@@ -148,7 +153,7 @@ def main(
         rpm_noise = np.random.normal(1, rpm_noise_scale, n)
         for k in range(n):
             theta[k] += w0 * (k + 1) * rpm_noise[k] * dt * 2 * math.pi
-        fimp = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
+        fimp = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k], theta_noise_coef) for k in range(n)]))
         fls = resist(x[i - 1], gamma_cr, S)
         xi_ = xi(x, i, fimp, P, ft, dtm, fi, fls)  # проверка на поломку
         x.append(xi_)
@@ -218,6 +223,7 @@ if __name__ == '__main__':
     rpm_noise_scale = 10e-4  # для оборотов
     m_debs_noise_scale = 10e-2  # для масс дебалансов
     R_debs_noise_scale = 10e-2  # для радиусов дебалансов
+    theta_noise = 10e-2  # фаза
 
     m_debs_custom_noise = [
         1.21,
@@ -254,7 +260,10 @@ if __name__ == '__main__':
         np.array(m), np.array(R),
         m_debs_custom_noise=np.array(m_debs_custom_noise),
         R_debs_custom_noise=np.array(R_debs_custom_noise),
-        # rpm_noise_scale=rpm_noise_scale, m_debs_noise_scale=m_debs_noise_scale, R_debs_noise_scale=R_debs_noise_scale,
+        theta_noise=theta_noise,
+        # rpm_noise_scale=rpm_noise_scale,
+        # m_debs_noise_scale=m_debs_noise_scale,
+        # R_debs_noise_scale=R_debs_noise_scale,
         dw=0.0,
         t_table=np.array(t_table),
         w_table=np.array(w_table)
