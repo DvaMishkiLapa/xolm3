@@ -204,11 +204,6 @@ if __name__ == '__main__':
         0.003344359555556
     ]
 
-    # Шумы (cлучайные выборки из нормального (гауссовского) распределения)
-    rpm_noise_scale = 10e-4  # для оборотов
-    m_debs_noise_scale = 10e-2  # для масс дебалансов
-    R_debs_noise_scale = 10e-2  # для радиусов дебалансов
-
     # Табличные значения
     t_table = [0.0, 6.0, 12.0, 18.0, 23.0, 27.0, 34.0, 40.0, 44.0, 55.0, 61.0, 64.0, 72.0, 77.0, 82.0, 86.0, 90.0, 99.0,
                105.0, 113.0, 120.0, 125.0, 135.0, 150.0, 158.0, 185.0, 203.0, 230.0, 263.0, 276.0, 285.0, 291.0, 310.0, 320.0]
@@ -217,7 +212,22 @@ if __name__ == '__main__':
     w_table = [0.0, 5.0, 5.16, 5.33, 5.5, 5.6, 5.8, 6.0, 6.16, 6.33, 6.5, 6.66, 6.83, 7.0, 7.16, 7.33, 7.5, 9.0,
                9.16, 9.83, 10.5, 11.16, 11.83, 13.83, 14.0, 14.4, 14.9, 15.4, 16.7, 17.5, 18.0, 18.5, 19.0, 19.0]
 
+    # Шумы (cлучайные выборки из нормального (гауссовского) распределения)
+    rpm_noise_scale = 10e-4  # для оборотов
+    m_debs_noise_scale = 10e-2  # для масс дебалансов
+    R_debs_noise_scale = 10e-2  # для радиусов дебалансов
+
     x, t, w, all_impulse = main(
+        g, dt, l, P, S, M,
+        gamma_cr, gamma_cf,
+        fi,
+        List(m), List(R),
+        dw=0.0,
+        t_table=List(t_table),
+        w_table=List(w_table)
+    )
+
+    x_noise, t_noise, w_noise, all_impulse_noise = main(
         g, dt, l, P, S, M,
         gamma_cr, gamma_cf,
         fi,
@@ -230,22 +240,25 @@ if __name__ == '__main__':
 
     f, axarr = plt.subplots(3, sharex=True)
     f.subplots_adjust(hspace=0.4)
-    axarr[0].plot(t, x, linewidth=3, color='r', label=r'Математическая модель')
+
+    axarr[0].plot(t, x, linewidth=2, color='r', label=r'Математическая модель')
+    axarr[0].plot(t_noise, x_noise, linewidth=3, color='m', linestyle='--', label=r'Математическая модель c шумом')
     axarr[0].set_title(r'$x(t)$ - глубина погружения (м)')
     axarr[0].set_ylabel(r'$x(t)$ - глубина погружения (м)')
     axarr[0].legend(loc='upper left')
-    axarr[1].plot(t, w, linewidth=3, color='b', label=r'Математическая модель')
-    axarr[1].set_title(r'$\omega$ - количество оборотов (об./c)')
-    axarr[1].set_ylabel(r'$\omega$ - количество оборотов (об./c)')
-    axarr[1].set_xlabel(r'$t$ - время погружения (с)')
+
+    axarr[1].plot(t, w, linewidth=2, color='b', label=r'Математическая модель')
+    axarr[1].plot(t_noise, w_noise, linewidth=2, color='m', linestyle='--', label=r'Математическая модель c шумом')
+    axarr[1].set_title(r'$\omega$ - кол-во оборотов (об./c)')
+    axarr[1].set_ylabel(r'$\omega$ - кол-во оборотов (об./c)')
     axarr[1].legend(loc='upper left')
+
     axarr[2].plot(t, all_impulse, linewidth=2, color='g', label=r'Импульс без шума')
+    axarr[2].plot(t_noise, all_impulse_noise, linewidth=2, color='orange', linestyle='--', label=r'Импульс с шумом')
     axarr[2].set_title(r'$F$ - сила импульса (Н)')
     axarr[2].set_ylabel(r'$F$ - сила импульса (Н)')
     axarr[2].set_xlabel(r'$t$ - время погружения (с)')
     axarr[2].legend(loc='upper left')
-    # axarr[3].plot(t, all_impulse_noise, linewidth=2, color='g')
-    # axarr[3].set_title(r'$F$ - сила импульса с шумом (Н)')
     for x in axarr:
         x.grid(True)
 
