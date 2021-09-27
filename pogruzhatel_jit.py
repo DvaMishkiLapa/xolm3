@@ -67,6 +67,7 @@ def main(
     gamma_cr, gamma_cf,
     fi,
     m_debs, R_debs,
+    m_debs_custom_noise=np.array([0.0]), R_debs_custom_noise=np.array([0.0]),
     rpm_noise_scale=0.0, m_debs_noise_scale=0.0, R_debs_noise_scale=0.0,
     dw=0.0,
     t_table=(0,), w_table=(0,)
@@ -91,6 +92,8 @@ def main(
     fi -- расчётное сопротивлене по боковой поверхности (кПа);
     m_debs -- список масс дебалансов;
     R_debs -- список радиусов дебалансов;
+    m_debs_custom_noise -- индивидуальные коэффициенты шумов массы для каждой пары дебалансов, по умолчанию или если найден `m_debs_noise_scale` - не используется;
+    R_debs_custom_noise -- индивидуальные коэффициенты шумов радиуса для каждой пары дебалансов, по умолчанию или если найден `R_debs_noise_scale` - не используется;
     rpm_noise_scale -- шумы (cлучайные выборки из нормального (гауссовского) распределения) для оборотов, по умолчанию не используется;
     m_debs_noise_scale -- шумы (cлучайные выборки из нормального (гауссовского) распределения) для масс дебалансов, по умолчанию не используется;
     R_debs_noise_scale -- шумы (cлучайные выборки из нормального (гауссовского) распределения) для радиусов дебалансов, по умолчанию не используется;
@@ -117,8 +120,16 @@ def main(
     i = 2  # порядковый номер момента времени
 
     rpm_noise = np.random.normal(1, rpm_noise_scale, n)
-    m_debs_noise = np.random.normal(1, m_debs_noise_scale, n)
-    R_debs_noise = np.random.normal(1, R_debs_noise_scale, n)
+
+    if m_debs_noise_scale == 0.0 and (m_debs_custom_noise != np.array([0.0])).any():
+        m_debs_noise = m_debs_custom_noise
+    else:
+        m_debs_noise = np.random.normal(1, m_debs_noise_scale, n)
+
+    if R_debs_noise_scale == 0.0 and (R_debs_custom_noise != np.array([0.0])).any():
+        R_debs_noise = R_debs_custom_noise
+    else:
+        R_debs_noise = np.random.normal(1, R_debs_noise_scale, n)
 
     m_debs = [x * noise for x, noise in zip(m_debs, m_debs_noise)]
     R_debs = [x * noise for x, noise in zip(R_debs, R_debs_noise)]
@@ -217,6 +228,24 @@ if __name__ == '__main__':
     m_debs_noise_scale = 10e-2  # для масс дебалансов
     R_debs_noise_scale = 10e-2  # для радиусов дебалансов
 
+    m_debs_custom_noise = [
+        1.21,
+        1.21,
+        1.21,
+        1.21,
+        1.21,
+        1.21,
+    ]
+
+    R_debs_custom_noise = [
+        1.01,
+        1.01,
+        1.01,
+        1.01,
+        1.01,
+        1.01,
+    ]
+
     x, t, w, all_impulse = main(
         g, dt, l, P, S, M,
         gamma_cr, gamma_cf,
@@ -232,7 +261,9 @@ if __name__ == '__main__':
         gamma_cr, gamma_cf,
         fi,
         List(m), List(R),
-        rpm_noise_scale=rpm_noise_scale, m_debs_noise_scale=m_debs_noise_scale, R_debs_noise_scale=R_debs_noise_scale,
+        m_debs_custom_noise=np.array(m_debs_custom_noise),
+        R_debs_custom_noise=np.array(R_debs_custom_noise),
+        # rpm_noise_scale=rpm_noise_scale, m_debs_noise_scale=m_debs_noise_scale, R_debs_noise_scale=R_debs_noise_scale,
         dw=0.0,
         t_table=List(t_table),
         w_table=List(w_table)
