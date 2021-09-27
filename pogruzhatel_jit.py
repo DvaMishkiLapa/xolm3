@@ -54,7 +54,7 @@ def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float, theta_noi
 
 @jit(nopython=True, cache=True)
 def main(
-    g, dt, l, P, S, M,
+    g, dt, l_pile, P, S, M,
     gamma_cr, gamma_cf,
     fi,
     m_debs, R_debs,
@@ -64,7 +64,7 @@ def main(
     m_debs_noise_scale=0.0,
     R_debs_noise_scale=0.0,
     dw=0.0,
-    t_table=np.array([0]), w_table=np.array([0])
+    t_table=np.array([0.0]), w_table=np.array([0.0])
 ):
     '''
     Получение данных по погружению:
@@ -77,7 +77,7 @@ def main(
     g -- ускорение свободного падения;
     n -- количество пар дебалансов;
     dt -- шаг по времени;
-    l -- длина сваи (м);
+    l_pile -- длина сваи (м);
     P -- периметр сваи (м);
     S -- площадь сечения сваи (м^2);
     M -- вес машинки + сваи (кг);
@@ -149,7 +149,7 @@ def main(
 
     curr_t_index = 0
     # пока количество оборотов меньше критического и глубина погружения меньше длины сваи
-    while w0 < 50 and x[i - 1] < l:
+    while w0 < 50 and x[i - 1] < l_pile:
         rpm_noise = np.random.normal(1, rpm_noise_scale, n)
         for k in range(n):
             theta[k] += w0 * (k + 1) * rpm_noise[k] * dt * 2 * math.pi
@@ -183,10 +183,10 @@ if __name__ == '__main__':
     n = 6  # количество пар дебалансов
     dt = 0.001  # шаг по времени
     dw = 0.01  # шаг по количеству оборотов в секунду
-    l = 1.15  # длина сваи (м)
+    l_pile = 1.15  # длина сваи (м)
     P = 0.02 * 4  # периметр сваи (м)
     S = 0.02 * 0.02 - 0.018 * 0.018  # площадь сечения сваи (м^2)
-    M = 37 + (l * 1.2)  # вес машинки + сваи (кг)
+    M = 37 + (l_pile * 1.2)  # вес машинки + сваи (кг)
     gamma_cr = 1.1  # коэффициент условий работы грунта под нижним концом сваи
     gamma_cf = 1.0  # коэффициент условий работы грунта на боковой поверхности
     fi = 17000.0  # расчётное сопротивлене по боковой поверхности (кПа)
@@ -244,7 +244,7 @@ if __name__ == '__main__':
     ]
 
     x, t, w, all_impulse = main(
-        g, dt, l, P, S, M,
+        g, dt, l_pile, P, S, M,
         gamma_cr, gamma_cf,
         fi,
         np.array(m), np.array(R),
@@ -254,7 +254,7 @@ if __name__ == '__main__':
     )
 
     x_noise, t_noise, w_noise, all_impulse_noise = main(
-        g, dt, l, P, S, M,
+        g, dt, l_pile, P, S, M,
         gamma_cr, gamma_cf,
         fi,
         np.array(m), np.array(R),
