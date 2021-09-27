@@ -49,7 +49,7 @@ def xi(x, i, fimp, P, ft, dtm, fi, fls):
 
 @jit(nopython=True, cache=True)
 def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float, theta_noise_coef: float) -> float:
-    return m * R * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta * theta_noise_coef)
+    return m * R * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta + theta_noise_coef)
 
 
 @jit(nopython=True, cache=True)
@@ -125,15 +125,15 @@ def main(
     else:
         R_debs_noise = np.random.normal(1, R_debs_noise_scale, n)
 
-    theta_noise_coef = np.random.normal(1, theta_noise)
+    theta_noise_coef = np.random.normal(0, theta_noise, n)
 
     m_debs = [x * noise for x, noise in zip(m_debs, m_debs_noise)]
     R_debs = [x * noise for x, noise in zip(R_debs, R_debs_noise)]
 
-    fimp_0 = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k], theta_noise_coef) for k in range(n)]))
+    fimp_0 = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k], theta_noise_coef[k]) for k in range(n)]))
     for k in range(n):
         theta[k] += w0 * (k + 1) * rpm_noise[k] * dt * 2 * math.pi
-    fimp_1 = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k], theta_noise_coef) for k in range(n)]))
+    fimp_1 = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k], theta_noise_coef[k]) for k in range(n)]))
 
     # # лобовое сопротивление в каждый момент времени
     # all_fls = [resist(x0), resist(x1)]
@@ -153,7 +153,7 @@ def main(
         rpm_noise = np.random.normal(1, rpm_noise_scale, n)
         for k in range(n):
             theta[k] += w0 * (k + 1) * rpm_noise[k] * dt * 2 * math.pi
-        fimp = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k], theta_noise_coef) for k in range(n)]))
+        fimp = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k], theta_noise_coef[k]) for k in range(n)]))
         fls = resist(x[i - 1], gamma_cr, S)
         xi_ = xi(x, i, fimp, P, ft, dtm, fi, fls)  # проверка на поломку
         x.append(xi_)
