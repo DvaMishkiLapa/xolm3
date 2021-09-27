@@ -6,7 +6,7 @@ from numba import jit
 from numba.typed import List
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=True)
 def resist(x: float, gamma_cr: float, S: float) -> float:
     '''
     Возращает лобовое сопротивление сваи на глубине `x`.
@@ -30,7 +30,7 @@ def resist(x: float, gamma_cr: float, S: float) -> float:
     return 6900 * 1000 * gamma_cr * S
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=True)
 def xi(x, i, fimp, P, ft, dtm, fi, fls):
     '''
     Считает глубину погружения в момент времени `i`.
@@ -56,12 +56,12 @@ def sum_(iterable) -> float:
     return result
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=True)
 def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float) -> float:
     return m * R * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=True)
 def main(
     g, dt, l, P, S, M,
     gamma_cr, gamma_cf,
