@@ -3,7 +3,6 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 from numba import jit
-from numba.typed import List
 
 
 @jit(nopython=True, cache=True)
@@ -70,7 +69,7 @@ def main(
     m_debs_custom_noise=np.array([0.0]), R_debs_custom_noise=np.array([0.0]),
     rpm_noise_scale=0.0, m_debs_noise_scale=0.0, R_debs_noise_scale=0.0,
     dw=0.0,
-    t_table=(0,), w_table=(0,)
+    t_table=np.array([0]), w_table=np.array([0])
 ):
     '''
     Получение данных по погружению:
@@ -250,23 +249,23 @@ if __name__ == '__main__':
         g, dt, l, P, S, M,
         gamma_cr, gamma_cf,
         fi,
-        List(m), List(R),
+        np.array(m), np.array(R),
         dw=0.0,
-        t_table=List(t_table),
-        w_table=List(w_table)
+        t_table=np.array(t_table),
+        w_table=np.array(w_table)
     )
 
     x_noise, t_noise, w_noise, all_impulse_noise = main(
         g, dt, l, P, S, M,
         gamma_cr, gamma_cf,
         fi,
-        List(m), List(R),
+        np.array(m), np.array(R),
         m_debs_custom_noise=np.array(m_debs_custom_noise),
         R_debs_custom_noise=np.array(R_debs_custom_noise),
         # rpm_noise_scale=rpm_noise_scale, m_debs_noise_scale=m_debs_noise_scale, R_debs_noise_scale=R_debs_noise_scale,
         dw=0.0,
-        t_table=List(t_table),
-        w_table=List(w_table)
+        t_table=np.array(t_table),
+        w_table=np.array(w_table)
     )
 
     f, axarr = plt.subplots(3, sharex=True)
