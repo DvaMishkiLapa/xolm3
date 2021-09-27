@@ -76,8 +76,7 @@ def main(
     x -- глубина погружения;
     t -- время погружения;
     w -- количество оборотов в секунду;
-    all_impulse -- импульс;
-    all_impulse_noise -- импульс с шумом.
+    all_impulse -- сила импульс.
 
     Параметры:
     g -- ускорение свободного падения
@@ -107,7 +106,6 @@ def main(
     ft = M * g
 
     theta = [0.0] * n
-    theta_noise = [0.0] * n
 
     # инициализируем списки данными первых двух итераций
     x0 = 0.0
@@ -118,7 +116,7 @@ def main(
     w = [w0, w0]  # количество оборотов в секунду в каждый момент времени
     i = 2  # порядковый номер момента времени
 
-    rpm_noise = np.random.normal(0, rpm_noise_scale, n)
+    rpm_noise = np.random.normal(1, rpm_noise_scale, n)
     m_debs_noise = np.random.normal(1, m_debs_noise_scale, n)
     R_debs_noise = np.random.normal(1, R_debs_noise_scale, n)
 
@@ -126,12 +124,9 @@ def main(
     R_debs = [x * noise for x, noise in zip(R_debs, R_debs_noise)]
 
     fimp_0 = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
-    fimp_noise_0 = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta_noise[k]) for k in range(n)]))
     for k in range(n):
-        theta[k] += w0 * (k + 1) * dt * 2 * math.pi
-        theta_noise[k] += w0 * (k + 1) * (1 + rpm_noise[k]) * dt * 2 * math.pi
+        theta[k] += w0 * (k + 1) * rpm_noise[k] * dt * 2 * math.pi
     fimp_1 = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
-    fimp_noise_1 = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta_noise[k]) for k in range(n)]))
 
     # # лобовое сопротивление в каждый момент времени
     # all_fls = [resist(x0), resist(x1)]
@@ -141,8 +136,6 @@ def main(
     # сила импульса в каждый момент времени
     all_impulse = [fimp_0, fimp_1]
     # сила импульса с шумом в каждый момент времени
-    all_impulse_noise = [fimp_noise_0, fimp_noise_1]
-    # # величина шума в каждый момент времени
     # noise_plot = [0, 0]
 
     period = int(1 / dt)
@@ -150,18 +143,15 @@ def main(
     curr_t_index = 0
     # пока количество оборотов меньше критического и глубина погружения меньше длины сваи
     while w0 < 50 and x[i - 1] < l:
-        rpm_noise = np.random.normal(0, rpm_noise_scale, n)
+        rpm_noise = np.random.normal(1, rpm_noise_scale, n)
         for k in range(n):
-            theta[k] += w0 * (k + 1) * dt * 2 * math.pi
-            theta_noise[k] += w0 * (k + 1) * (1 + rpm_noise[k]) * dt * 2 * math.pi
+            theta[k] += w0 * (k + 1) * rpm_noise[k] * dt * 2 * math.pi
         fimp = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
-        fimp_noise = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta_noise[k]) for k in range(n)]))
         fls = resist(x[i - 1], gamma_cr, S)
-        xi_ = xi(x, i, fimp_noise, P, ft, dtm, fi, fls)  # проверка на поломку будет по шуму
+        xi_ = xi(x, i, fimp, P, ft, dtm, fi, fls)  # проверка на поломку
         x.append(xi_)
         t.append(dt * i)
         all_impulse.append(fimp)
-        all_impulse_noise.append(fimp_noise)
         if dw and not i % period:  # Выбор способа увеличения оборотов. Если dw=0, идем другим путем
             # если за текущую итерацию свая погрузилась меньше, чем на 1 см
             if abs(x[i] - x[i - period]) <= 0.01:
@@ -177,7 +167,7 @@ def main(
         w.append(w0)
         i += 1
 
-    return x, t, w, all_impulse, all_impulse_noise
+    return x, t, w, all_impulse
 
 
 if __name__ == '__main__':
@@ -227,7 +217,7 @@ if __name__ == '__main__':
     w_table = [0.0, 5.0, 5.16, 5.33, 5.5, 5.6, 5.8, 6.0, 6.16, 6.33, 6.5, 6.66, 6.83, 7.0, 7.16, 7.33, 7.5, 9.0,
                9.16, 9.83, 10.5, 11.16, 11.83, 13.83, 14.0, 14.4, 14.9, 15.4, 16.7, 17.5, 18.0, 18.5, 19.0, 19.0]
 
-    x, t, w, all_impulse, all_impulse_noise = main(
+    x, t, w, all_impulse = main(
         g, dt, l, P, S, M,
         gamma_cr, gamma_cf,
         fi,
@@ -241,17 +231,14 @@ if __name__ == '__main__':
     f, axarr = plt.subplots(3, sharex=True)
     f.subplots_adjust(hspace=0.4)
     axarr[0].plot(t, x, linewidth=3, color='r', label=r'Математическая модель')
-    axarr[0].plot(t_table, x_table, linewidth=3, color='m', linestyle='--', label=r'Табличные данные')
     axarr[0].set_title(r'$x(t)$ - глубина погружения (м)')
     axarr[0].set_ylabel(r'$x(t)$ - глубина погружения (м)')
     axarr[0].legend(loc='upper left')
     axarr[1].plot(t, w, linewidth=3, color='b', label=r'Математическая модель')
-    axarr[1].plot(t_table, w_table, linewidth=3, color='m', linestyle='--', label=r'Табличные данные')
-    axarr[1].set_title(r'$\omega$ - количество оборотов (с)')
-    axarr[1].set_ylabel(r'$\omega$ - количество оборотов (с)')
+    axarr[1].set_title(r'$\omega$ - количество оборотов (об./c)')
+    axarr[1].set_ylabel(r'$\omega$ - количество оборотов (об./c)')
     axarr[1].set_xlabel(r'$t$ - время погружения (с)')
     axarr[1].legend(loc='upper left')
-    axarr[2].plot(t, all_impulse_noise, linewidth=3, color='orange', label=r'Импульс с шумом')
     axarr[2].plot(t, all_impulse, linewidth=2, color='g', label=r'Импульс без шума')
     axarr[2].set_title(r'$F$ - сила импульса (Н)')
     axarr[2].set_ylabel(r'$F$ - сила импульса (Н)')
