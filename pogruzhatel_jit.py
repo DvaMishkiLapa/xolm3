@@ -62,7 +62,15 @@ def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float) -> float:
 
 
 @jit(nopython=True)
-def main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_debs, dw=0.0, t_table=(0,), w_table=(0,)):
+def main(
+    g, dt, l, P, S, M,
+    gamma_cr, gamma_cf,
+    fi,
+    m_debs, R_debs,
+    rpm_noise_scale=0.0, m_debs_noise_scale=0.0, R_debs_noise_scale=0.0,
+    dw=0.0,
+    t_table=(0,), w_table=(0,)
+):
     '''
     Получение данных по погружению:
     x -- глубина погружения;
@@ -84,6 +92,9 @@ def main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_d
     fi -- расчётное сопротивлене по боковой поверхности (кПа)
     m_debs -- список масс дебалансов
     R_debs -- список радиусов дебалансов
+    rpm_noise_scale -- шумы (cлучайные выборки из нормального (гауссовского) распределения) для оборотов, по умолчанию не используется
+    m_debs_noise_scale -- шумы (cлучайные выборки из нормального (гауссовского) распределения) для масс дебалансов, по умолчанию не используется
+    R_debs_noise_scale -- шумы (cлучайные выборки из нормального (гауссовского) распределения) для радиусов дебалансов, по умолчанию не используется
     dw -- шаг по количеству оборотов в секунду, по умолчанию не используется
     t_table -- табличные данные времени, по умолчанию не используется
     w_table -- табличные данные оборотов, по умолчанию не используется
@@ -108,6 +119,11 @@ def main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, m_debs, R_d
     i = 2  # порядковый номер момента времени
 
     rpm_noise = np.random.normal(0, rpm_noise_scale, n)
+    m_debs_noise = np.random.normal(1, m_debs_noise_scale, n)
+    R_debs_noise = np.random.normal(1, R_debs_noise_scale, n)
+
+    m_debs = [x * noise for x, noise in zip(m_debs, m_debs_noise)]
+    R_debs = [x * noise for x, noise in zip(R_debs, R_debs_noise)]
 
     fimp_0 = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
     fimp_noise_0 = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta_noise[k]) for k in range(n)]))
@@ -198,8 +214,10 @@ if __name__ == '__main__':
         0.003344359555556
     ]
 
-    # Шумы
-    rpm_noise_scale = 10e-4  # cлучайные выборки из нормального (гауссовского) распределения
+    # Шумы (cлучайные выборки из нормального (гауссовского) распределения)
+    rpm_noise_scale = 10e-4  # для оборотов
+    m_debs_noise_scale = 10e-2  # для масс дебалансов
+    R_debs_noise_scale = 10e-2  # для радиусов дебалансов
 
     # Табличные значения
     t_table = [0.0, 6.0, 12.0, 18.0, 23.0, 27.0, 34.0, 40.0, 44.0, 55.0, 61.0, 64.0, 72.0, 77.0, 82.0, 86.0, 90.0, 99.0,
@@ -209,8 +227,16 @@ if __name__ == '__main__':
     w_table = [0.0, 5.0, 5.16, 5.33, 5.5, 5.6, 5.8, 6.0, 6.16, 6.33, 6.5, 6.66, 6.83, 7.0, 7.16, 7.33, 7.5, 9.0,
                9.16, 9.83, 10.5, 11.16, 11.83, 13.83, 14.0, 14.4, 14.9, 15.4, 16.7, 17.5, 18.0, 18.5, 19.0, 19.0]
 
-    x, t, w, all_impulse, all_impulse_noise = main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R), t_table=List(t_table), w_table=List(w_table))
-    # x, t, w, all_impulse, all_impulse_noise = main(g, dt, l, P, S, M, gamma_cr, gamma_cf, fi, rpm_noise_scale, List(m), List(R), dw=dw)
+    x, t, w, all_impulse, all_impulse_noise = main(
+        g, dt, l, P, S, M,
+        gamma_cr, gamma_cf,
+        fi,
+        List(m), List(R),
+        rpm_noise_scale=rpm_noise_scale, m_debs_noise_scale=m_debs_noise_scale, R_debs_noise_scale=R_debs_noise_scale,
+        dw=0.0,
+        t_table=List(t_table),
+        w_table=List(w_table)
+    )
 
     f, axarr = plt.subplots(3, sharex=True)
     f.subplots_adjust(hspace=0.4)
