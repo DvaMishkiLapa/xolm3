@@ -47,14 +47,6 @@ def xi(x, i, fimp, P, ft, dtm, fi, fls):
     return x[i - 1] + min(f + fbs * dtm, 0)
 
 
-@jit(nopython=True)
-def sum_(iterable) -> float:
-    result = 0
-    for x in iterable:
-        result += x
-    return result
-
-
 @jit(nopython=True, cache=True)
 def get_fimp_el(m: float, R: float, w0: float, k: float, theta: float) -> float:
     return m * R * (w0 * (k + 1) * 2 * math.pi) ** 2 * math.cos(theta)
@@ -133,10 +125,10 @@ def main(
     m_debs = [x * noise for x, noise in zip(m_debs, m_debs_noise)]
     R_debs = [x * noise for x, noise in zip(R_debs, R_debs_noise)]
 
-    fimp_0 = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
+    fimp_0 = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
     for k in range(n):
         theta[k] += w0 * (k + 1) * rpm_noise[k] * dt * 2 * math.pi
-    fimp_1 = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
+    fimp_1 = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
 
     # # лобовое сопротивление в каждый момент времени
     # all_fls = [resist(x0), resist(x1)]
@@ -156,7 +148,7 @@ def main(
         rpm_noise = np.random.normal(1, rpm_noise_scale, n)
         for k in range(n):
             theta[k] += w0 * (k + 1) * rpm_noise[k] * dt * 2 * math.pi
-        fimp = sum_(List([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
+        fimp = np.sum(np.array([get_fimp_el(m_debs[k], R_debs[k], w0, k, theta[k]) for k in range(n)]))
         fls = resist(x[i - 1], gamma_cr, S)
         xi_ = xi(x, i, fimp, P, ft, dtm, fi, fls)  # проверка на поломку
         x.append(xi_)
@@ -194,7 +186,7 @@ if __name__ == '__main__':
     gamma_cf = 1.0  # коэффициент условий работы грунта на боковой поверхности
     fi = 17000.0  # расчётное сопротивлене по боковой поверхности (кПа)
 
-    # масса дебалансов
+    # масса дебалансов (кг)
     m = [
         2.75758026171761,
         0.969494952543874,
@@ -204,7 +196,7 @@ if __name__ == '__main__':
         0.076567059516108
     ]
 
-    # радиусы дебалансов
+    # радиусы дебалансов (м)
     R = [
         0.020070401444444,
         0.011900487555556,
