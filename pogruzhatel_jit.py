@@ -225,6 +225,7 @@ if __name__ == '__main__':
     R_debs_noise_scale = 10e-2  # для радиусов дебалансов
     theta_noise = 10e-2  # фаза
 
+    # Коэф. погрешности массы дебалансов
     m_debs_custom_noise = [
         1.21,
         1.21,
@@ -234,6 +235,7 @@ if __name__ == '__main__':
         1.21,
     ]
 
+    # Коэф. погрешности радиуса дебалансов
     R_debs_custom_noise = [
         1.01,
         1.01,
@@ -243,6 +245,7 @@ if __name__ == '__main__':
         1.01,
     ]
 
+    # Получение данных погружения без погрешностей и шумов
     x, t, w, all_impulse = main(
         g, dt, l_pile, P, S, M,
         gamma_cr, gamma_cf,
@@ -253,6 +256,7 @@ if __name__ == '__main__':
         w_table=np.array(w_table)
     )
 
+    # Получение данных погружения с погрешностями и шумами
     x_noise, t_noise, w_noise, all_impulse_noise = main(
         g, dt, l_pile, P, S, M,
         gamma_cr, gamma_cf,
@@ -269,6 +273,7 @@ if __name__ == '__main__':
         w_table=np.array(w_table)
     )
 
+    # Создание графиков
     f, axarr = plt.subplots(3, sharex=True)
     f.subplots_adjust(hspace=0.4)
 
@@ -285,7 +290,7 @@ if __name__ == '__main__':
     axarr[1].legend(loc='upper left')
 
     axarr[2].plot(t, all_impulse, linewidth=2, color='g', label=r'Импульс без шума')
-    axarr[2].plot(t_noise, all_impulse_noise, linewidth=2, color='orange', linestyle='--', label=r'Импульс с шумом')
+    axarr[2].plot(t_noise, all_impulse_noise, linewidth=2, color='orange', label=r'Импульс с шумом')
     axarr[2].set_title(r'$F$ - сила импульса (Н)')
     axarr[2].set_ylabel(r'$F$ - сила импульса (Н)')
     axarr[2].set_xlabel(r'$t$ - время погружения (с)')
