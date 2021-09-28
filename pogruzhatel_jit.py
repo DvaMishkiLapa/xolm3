@@ -1,3 +1,7 @@
+import os
+import datetime
+import time
+
 import math
 
 import matplotlib.pyplot as plt
@@ -174,7 +178,7 @@ def main(
         w.append(w0)
         i += 1
 
-    return x, t, w, all_impulse
+    return x, t, w, all_impulse, rpm_noise, m_debs_noise, R_debs_noise, m_debs, R_debs
 
 
 if __name__ == '__main__':
@@ -227,26 +231,27 @@ if __name__ == '__main__':
 
     # Коэф. погрешности массы дебалансов
     m_debs_custom_noise = [
-        1.21,
-        1.21,
-        1.21,
-        1.21,
-        1.21,
-        1.21,
+        .71,
+        .71,
+        .71,
+        .71,
+        .71,
+        .71,
     ]
 
     # Коэф. погрешности радиуса дебалансов
     R_debs_custom_noise = [
-        1.01,
-        1.01,
-        1.01,
-        1.01,
-        1.01,
-        1.01,
+        .71,
+        .71,
+        .71,
+        .71,
+        .71,
+        .71,
     ]
 
     # Получение данных погружения без погрешностей и шумов
-    x, t, w, all_impulse = main(
+    start_time = time.time()
+    x, t, w, all_impulse, rpm_noise, m_debs_noise, R_debs_noise, m_debs, R_debs = main(
         g, dt, l_pile, P, S, M,
         gamma_cr, gamma_cf,
         fi,
@@ -257,7 +262,7 @@ if __name__ == '__main__':
     )
 
     # Получение данных погружения с погрешностями и шумами
-    x_noise, t_noise, w_noise, all_impulse_noise = main(
+    x_noise, t_noise, w_noise, all_impulse_noise, rpm_noise, m_debs_noise, R_debs_noise, m_debs, R_debs = main(
         g, dt, l_pile, P, S, M,
         gamma_cr, gamma_cf,
         fi,
@@ -272,6 +277,7 @@ if __name__ == '__main__':
         t_table=np.array(t_table),
         w_table=np.array(w_table)
     )
+    print("--- %s seconds ---" % (time.time() - start_time))
 
     # Создание графиков
     f, axarr = plt.subplots(3, sharex=True)
@@ -295,9 +301,59 @@ if __name__ == '__main__':
     axarr[2].set_ylabel(r'$F$ - сила импульса (Н)')
     axarr[2].set_xlabel(r'$t$ - время погружения (с)')
     axarr[2].legend(loc='upper left')
+
+    # Zoom на 3 пика в 50 секунд
+    axarr[0].set_ylim([-0.01, 0.045])
+    axarr[1].set_ylim([6.1, 6.2])
+    axarr[2].set_xlim([50.04, 50.5])
+    axarr[2].set_ylim([-200, 400])
     for x in axarr:
         x.grid(True)
 
+    # Процесс сохранения
+    date = datetime.datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
+    os.mkdir(f'./{date}')
+
     plt.rcParams.update({'font.size': 12})
+    f.set_size_inches(9, 7)
+
+    f.savefig(f'./{date}/graph_zoom.png', dpi=500)
+    f.canvas.manager.set_window_title(date)
+
+    axarr[2].set_xlim([50.17, 50.35])
+    f.savefig(f'./{date}/graph_zoomx2.png', dpi=500)
+    f.canvas.manager.set_window_title(date)
+
+    with open(f'./{date}/Характеристики.txt', 'w', encoding='utf8') as f:
+        f.write(f'''######################################################################## Характеристики процесса погружения ########################################################################
+######################################################################## Дата создания: {date} ########################################################################
+
+Количество пар дебалансов:\t\t\t\t\t\t\t\t\t\t {len(m)}
+Ускорение свободного падения g:\t\t\t\t\t\t\t\t\t {g}
+Шаг по времени dt:\t\t\t\t\t\t\t\t\t\t\t\t {dt}
+Шаг по кол-ву об/с dw (если используется):\t\t\t\t\t\t {dw}
+Длина сваи (м) l:\t\t\t\t\t\t\t\t\t\t\t\t {l_pile}
+Периметр сваи (м) P:\t\t\t\t\t\t\t\t\t\t\t {P}
+Площадь сечения сваи (м^2) S:\t\t\t\t\t\t\t\t\t {S}
+Вес машинки + сваи (кг) M:\t\t\t\t\t\t\t\t\t\t {M}
+Коэф. условий работы грунта под нижним концом сваи gamma_cr:\t {gamma_cr}
+Коэф. условий работы грунта на боковой поверхности gamma_cf:\t {gamma_cf}
+Расчётное сопротивлене по боковой поверхности (кПа) fi:\t\t\t {fi}
+
+Отношение max к min для импульса без шума:\t {max(all_impulse) / min(all_impulse)}
+Отношение max к min для импульса c шумом:\t {max(all_impulse_noise) / min(all_impulse_noise)}
+
+Коэф. генерации шума оборотов:\t\t\t\t\t {rpm_noise_scale}
+Коэф. генерации шума фазы:\t\t\t\t\t\t {theta_noise}
+Коэф. генерации погрешности массы дебалансов:\t {m_debs_noise_scale}
+Коэф. генерации погрешности массы дебалансов:\t {R_debs_noise_scale}
+
+*** Может не использоваться, если в функцию переданы коэф. генерации, отличные от нуля ***
+Коэф. шума оборотов:\t\t\t\t\t\t\t {rpm_noise}
+Коэф. погрешности массы пар дебалансов:\t\t\t {m_debs_noise}
+Коэф. погрешности радиуса пар дебалансов:\t\t {R_debs_noise}
+Масса пар дебалансов (с учетом погрешности):\t {m_debs}
+Радиус пар дебалансов (с учетом погрешности):\t {R_debs}
+        ''')
 
     plt.show()
