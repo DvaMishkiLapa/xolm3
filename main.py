@@ -4,10 +4,10 @@ import sys
 
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5agg import \
     NavigationToolbar2QT as NavigationToolbar2
-from numba.typed import List
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import mainwindow
@@ -266,9 +266,9 @@ class xolm(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
                 self.gamma_cr,
                 self.gamma_cf,
                 self.fi,
-                self.noise_coef,
-                List(self.m_debs),
-                List(self.R_debs),
+                np.array(self.m_debs),
+                np.array(self.R_debs),
+                rpm_noise_scale=self.noise_coef,
                 dw=self.speed_step
             )
             if len(self.x) < 2700:
