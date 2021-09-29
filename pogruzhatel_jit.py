@@ -305,6 +305,9 @@ if __name__ == '__main__':
     axarr[2].set_xlabel(r'$t$ - время погружения (с)')
     axarr[2].legend(loc='upper left')
 
+    f.savefig(f'{path}/graph.png', dpi=500)
+    f.canvas.manager.set_window_title(date)
+
     # Zoom на 3 пика в 50 секунд
     axarr[0].set_ylim([-0.01, 0.045])
     axarr[1].set_ylim([6.1, 6.2])
@@ -313,21 +316,14 @@ if __name__ == '__main__':
     for x in axarr:
         x.grid(True)
 
-    # Процесс сохранения
-    date = datetime.datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
-    os.mkdir(f'./{date}')
-
-    plt.rcParams.update({'font.size': 12})
-    f.set_size_inches(9, 7)
-
-    f.savefig(f'./{date}/graph_zoom.png', dpi=500)
+    f.savefig(f'{path}/graph_zoom.png', dpi=500)
     f.canvas.manager.set_window_title(date)
 
     axarr[2].set_xlim([50.17, 50.35])
-    f.savefig(f'./{date}/graph_zoomx2.png', dpi=500)
+    f.savefig(f'{path}/graph_zoomx2.png', dpi=500)
     f.canvas.manager.set_window_title(date)
 
-    with open(f'./{date}/Характеристики.txt', 'w', encoding='utf8') as f:
+    with open(f'{path}/Характеристики.txt', 'w', encoding='utf8') as f:
         f.write(f'''######################################################################## Характеристики процесса погружения ########################################################################
 ######################################################################## Дата создания: {date} ########################################################################
 
