@@ -251,7 +251,7 @@ if __name__ == '__main__':
 
     # Получение данных погружения без погрешностей и шумов
     start_time = time.time()
-    x, t, w, all_impulse, rpm_noise, m_debs_noise, R_debs_noise, m_debs, R_debs = main(
+    x, t, w, all_impulse, rpm_noise, m_debs_noise, R_debs_noise, theta_noise_coef, m_debs, R_debs = main(
         g, dt, l_pile, P, S, M,
         gamma_cr, gamma_cf,
         fi,
@@ -262,7 +262,7 @@ if __name__ == '__main__':
     )
 
     # Получение данных погружения с погрешностями и шумами
-    x_noise, t_noise, w_noise, all_impulse_noise, rpm_noise, m_debs_noise, R_debs_noise, m_debs, R_debs = main(
+    x_noise, t_noise, w_noise, all_impulse_noise, rpm_noise, m_debs_noise, R_debs_noise, theta_noise_coef, m_debs, R_debs = main(
         g, dt, l_pile, P, S, M,
         gamma_cr, gamma_cf,
         fi,
@@ -346,12 +346,13 @@ if __name__ == '__main__':
 Коэф. генерации шума оборотов:\t\t\t\t\t {rpm_noise_scale}
 Коэф. генерации шума фазы:\t\t\t\t\t\t {theta_noise}
 Коэф. генерации погрешности массы дебалансов:\t {m_debs_noise_scale}
-Коэф. генерации погрешности массы дебалансов:\t {R_debs_noise_scale}
+Коэф. генерации погрешности радиусов дебалансов: {R_debs_noise_scale}
 
 *** Может не использоваться, если в функцию переданы коэф. генерации, отличные от нуля ***
 Коэф. шума оборотов:\t\t\t\t\t\t\t {rpm_noise}
 Коэф. погрешности массы пар дебалансов:\t\t\t {m_debs_noise}
 Коэф. погрешности радиуса пар дебалансов:\t\t {R_debs_noise}
+Коэф. шума фазы пар дебалансов:\t\t\t\t\t {theta_noise_coef}
 Масса пар дебалансов (с учетом погрешности):\t {m_debs}
 Радиус пар дебалансов (с учетом погрешности):\t {R_debs}
         ''')
