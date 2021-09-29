@@ -279,6 +279,9 @@ if __name__ == '__main__':
     )
     print("--- %s seconds ---" % (time.time() - start_time))
 
+    last_x = x[-1]
+    last_x_noise = x_noise[-1]
+
     # Создание графиков
     f, axarr = plt.subplots(3, sharex=True)
     f.subplots_adjust(hspace=0.4)
@@ -355,6 +358,9 @@ if __name__ == '__main__':
 Коэф. шума фазы пар дебалансов:\t\t\t\t\t {theta_noise_coef}
 Масса пар дебалансов (с учетом погрешности):\t {m_debs}
 Радиус пар дебалансов (с учетом погрешности):\t {R_debs}
+
+Глубина погружения с шумом в метрах:\t {last_x_noise}
+Глубина погружения без шумом в метрах:\t {last_x}
         ''')
 
     plt.show()
