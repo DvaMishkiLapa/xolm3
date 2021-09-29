@@ -178,7 +178,7 @@ def main(
         w.append(w0)
         i += 1
 
-    return x, t, w, all_impulse, rpm_noise, m_debs_noise, R_debs_noise, m_debs, R_debs
+    return x, t, w, all_impulse, rpm_noise, m_debs_noise, R_debs_noise, theta_noise_coef, m_debs, R_debs
 
 
 if __name__ == '__main__':
@@ -282,6 +282,15 @@ if __name__ == '__main__':
     last_x = x[-1]
     last_x_noise = x_noise[-1]
 
+    x_list = x.copy()
+    t_list = t.copy()
+    w_list = w.copy()
+    all_impulse_list = all_impulse.copy()
+    x_noise_list = x_noise.copy()
+    t_noise_list = t_noise.copy()
+    w_noise_list = w_noise.copy()
+    all_impulse_noise_list = all_impulse_noise.copy()
+
     # Создание графиков
     f, axarr = plt.subplots(3, sharex=True)
     f.subplots_adjust(hspace=0.4)
@@ -313,8 +322,6 @@ if __name__ == '__main__':
     axarr[1].set_ylim([6.1, 6.2])
     axarr[2].set_xlim([50.04, 50.5])
     axarr[2].set_ylim([-200, 400])
-    for x in axarr:
-        x.grid(True)
 
     f.savefig(f'{path}/graph_zoom.png', dpi=500)
     f.canvas.manager.set_window_title(date)
@@ -322,6 +329,21 @@ if __name__ == '__main__':
     axarr[2].set_xlim([50.17, 50.35])
     f.savefig(f'{path}/graph_zoomx2.png', dpi=500)
     f.canvas.manager.set_window_title(date)
+
+    axarr[0].set_ylim([-0.01, 0.045])
+    axarr[1].set_ylim([6.1, 6.2])
+    axarr[2].set_xlim([50.04, 50.5])
+    axarr[2].set_ylim([-200, 400])
+
+    for a in axarr:
+        a.set_xlim(min(t_list[0], t_noise_list[0]) - 5, max(t_list[-1], t_noise_list[-1]) + 5)
+        a.relim()
+        a.autoscale_view()
+    axarr[0].set_ylim(min(x_list[0], x_noise_list[0]) - 0.25, max(x_list[-1], x_noise_list[-1]) + 0.25)
+    axarr[1].set_ylim(min(w_list[0], w_noise_list[0]) - 0.5, max(w_list[-1], w_noise_list[-1]) + 0.5)
+    axarr[2].set_ylim(
+        min(min(all_impulse_list[-100:]), min(all_impulse_noise_list[-100:])) - 5,
+        max(max(all_impulse_list[-100:]), max(all_impulse_noise_list[-100:])) + 5)
 
     with open(f'{path}/Характеристики.txt', 'w', encoding='utf8') as f:
         f.write(f'''######################################################################## Характеристики процесса погружения ########################################################################
