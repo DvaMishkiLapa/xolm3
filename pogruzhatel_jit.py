@@ -231,22 +231,22 @@ if __name__ == '__main__':
 
     # Коэф. погрешности массы дебалансов
     m_debs_custom_noise = [
-        .71,
-        .71,
-        .71,
-        .71,
-        .71,
-        .71,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
     ]
 
     # Коэф. погрешности радиуса дебалансов
     R_debs_custom_noise = [
-        .71,
-        .71,
-        .71,
-        .71,
-        .71,
-        .71,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
     ]
 
     # Получение данных погружения без погрешностей и шумов
@@ -313,6 +313,13 @@ if __name__ == '__main__':
     axarr[2].set_ylabel(r'$F$ - сила импульса (Н)')
     axarr[2].set_xlabel(r'$t$ - время погружения (с)')
     axarr[2].legend(loc='upper left')
+
+    for x in axarr:
+        x.grid(True)
+
+    date = datetime.datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
+    path = f'./reports/{date}'
+    os.mkdir(path)
 
     f.savefig(f'{path}/graph.png', dpi=500)
     f.canvas.manager.set_window_title(date)
