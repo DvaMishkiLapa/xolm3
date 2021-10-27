@@ -232,21 +232,21 @@ if __name__ == '__main__':
     # Коэф. погрешности массы дебалансов
     m_debs_custom_noise = [
         1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
+        1.1,
+        1.2,
+        1.3,
+        0.9,
+        0.8,
     ]
 
     # Коэф. погрешности радиуса дебалансов
     R_debs_custom_noise = [
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
+        0.9,
+        0.8,
+        0.7,
+        1.1,
+        1.2,
+        1.3,
     ]
 
     # Получение данных погружения без погрешностей и шумов
@@ -317,8 +317,12 @@ if __name__ == '__main__':
     for x in axarr:
         x.grid(True)
 
+    report_folder = './reports'
+
+    os.makedirs(report_folder, exist_ok=True)
+
     date = datetime.datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
-    path = f'./reports/{date}'
+    path = f'{report_folder}/{date}'
     os.mkdir(path)
 
     f.savefig(f'{path}/graph.png', dpi=500)
